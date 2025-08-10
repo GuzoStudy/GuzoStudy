@@ -26,7 +26,9 @@ CopyEdit
 git clone https://github.com/GuzoStudy/GuzoStudy.git
 
 # Navigate into the project folder
+```bash
 cd GuzoStudy
+```
 
 # Install dependencies
 npm install
