@@ -65,8 +65,10 @@ You’re free to use, modify, and distribute this project with proper credit.
 ________________________________________
 
  Contact 
- Email: your-email@example.com
+ Email: GuzoStudy.gamil.com
+ 
  Website: Coming soon!
+ 
  Twitter: Coming soon!
 ________________________________________
 GuzoStudy – Your Journey to Knowledge Starts Here. 
