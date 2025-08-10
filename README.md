@@ -1,5 +1,4 @@
-# GuzoStudy
- GuzoStudy – E-Learning Platform
+# GuzoStudy E-Learning Platform
 GuzoStudy is a modern, interactive, and user-friendly e-learning platform designed to make quality education accessible to everyone. Whether you're a student, educator, or lifelong learner, GuzoStudy empowers you to learn, teach, and connect — all in one place.
 ________________________________________
  Features
@@ -45,9 +44,6 @@ Contributors
 2.	Abdi Mudesir Email: abdimudesir43@gmail.com 
 3.	Imran Nuru Email: imrannuru290@gmail.com
 4.	Mahilet Mulugeta Email: mahimahlet2002@gmail.com
-5.	
-6.	
-7.	
 ________________________________________
  Contact 
  Email: your-email@example.com
