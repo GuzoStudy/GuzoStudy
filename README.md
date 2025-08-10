@@ -57,6 +57,11 @@ Contributors
 3.	Imran Nuru Email: imrannuru290@gmail.com
 4.	Mahilet Mulugeta Email: mahimahlet2002@gmail.com
 ________________________________________
+ License
+This project is licensed under the [MIT License](LICENSE) – see the LICENSE file for details.
+You’re free to use, modify, and distribute this project with proper credit.
+________________________________________
+
  Contact 
  Email: your-email@example.com
  Website: Coming soon!
