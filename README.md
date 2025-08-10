@@ -31,10 +31,14 @@ cd GuzoStudy
 ```
 
 # Install dependencies
+```
 npm install
+```
 
 # Start the development server
+```
 npm start
+```
 ________________________________________
 Roadmap
 •	Web Application Version (React)
