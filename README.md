@@ -3,11 +3,17 @@ GuzoStudy is a modern, interactive, and user-friendly e-learning platform design
 ________________________________________
  Features
 •	 Course Management – Create, manage, and enroll in courses.
+
 •	 Video Conferencing – Join live classes with real-time audio & video.
+
 •	 Quizzes & Assessments – Test your knowledge with interactive quizzes.
+
 •	 Discussion Forums – Collaborate and share ideas with peers.
+
 •	 Resource Sharing – Access and upload lecture notes, slides, and documents.
+
 •	 Search & Filter – Quickly find courses, topics, or instructors.
+
 •	 Responsive Design – Learn from any device.
 ________________________________________
  Tech Stack
