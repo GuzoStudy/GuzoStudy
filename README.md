@@ -1,4 +1,4 @@
-![image alt](https://github.com/GuzoStudy/GuzoStudy/blob/main/GuzoStudyLogo.png?raw=true)
+<img src="https://github.com/GuzoStudy/GuzoStudy/blob/main/GuzoStudyLogo.png" width"250" height"250"/>
 # GuzoStudy E-Learning Platform
 GuzoStudy is a modern, interactive, and user-friendly e-learning platform designed to make quality education accessible to everyone. Whether you're a student, educator, or lifelong learner, GuzoStudy empowers you to learn, teach, and connect — all in one place.
 ________________________________________
