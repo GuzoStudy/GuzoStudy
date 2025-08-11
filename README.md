@@ -19,14 +19,23 @@ ________________________________________
 •	 Responsive Design – Learn from any device.
 ________________________________________
  Tech Stack
+ 
 Frontend:
+
 •	React.js
+
 Backend:
+
 •	Node.js
+
 •	Express.js
+
 •	PostgreSQL
+
 Other Tools & Services:
+
 •	WebSocket for live chat
+
  Installation
 bash
 CopyEdit
