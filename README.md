@@ -1,4 +1,4 @@
-<img align=center width="399" height="393" alt="image" src="https://github.com/GuzoStudy/GuzoStudy/blob/main/GuzoStudyLogo.png?raw=true" />
+<img align=center width="400" height="400" alt="image" src="https://github.com/GuzoStudy/GuzoStudy/blob/main/GuzoStudyLogo.png?raw=true" />
 
 # GuzoStudy E-Learning Platform
 
@@ -74,7 +74,7 @@ Contributors
 6.	Selam Kiflay Email: selamkiflay10@gmail.com
 7.	Dagmawi Temesgen Email: dagmawitemesgen542@gmail.com
 ________________________________________
- License
+# License
 This project is licensed under the [MIT License](LICENSE) – see the LICENSE file for details.
 You’re free to use, modify, and distribute this project with proper credit.
 ________________________________________
