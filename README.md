@@ -1,9 +1,10 @@
 <img src="https://github.com/GuzoStudy/GuzoStudy/blob/main/GuzoStudyLogo.png?raw=true" data-canonical-src="https://github.com/GuzoStudy/GuzoStudy/blob/main/GuzoStudyLogo.png?raw=true" width="200" height="400" />
 # GuzoStudy E-Learning Platform
+
 GuzoStudy is a modern, interactive, and user-friendly e-learning platform designed to make quality education accessible to everyone. Whether you're a student, educator, or lifelong learner, GuzoStudy empowers you to learn, teach, and connect — all in one place.
 ________________________________________
  
- Features
+# Features
  
 •	 Course Management – Create, manage, and enroll in courses.
 
@@ -19,7 +20,7 @@ ________________________________________
 
 •	 Responsive Design – Learn from any device.
 ________________________________________
- Tech Stack
+# Tech Stack
  
 Frontend:
 
@@ -37,7 +38,7 @@ Other Tools & Services:
 
 •	WebSocket for live chat
 
- Installation
+# Installation
 bash
 CopyEdit
 # Clone the repository
