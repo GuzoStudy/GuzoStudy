@@ -79,7 +79,7 @@ You’re free to use, modify, and distribute this project with proper credit.
 ________________________________________
 
  Contact 
- Email: GuzoStudy.gamil.com
+ Email: GuzoStudy@gamil.com
  
  Website: Coming soon!
  
