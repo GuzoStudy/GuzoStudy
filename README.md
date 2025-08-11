@@ -60,14 +60,14 @@ npm install
 npm start
 ```
 ________________________________________
-#Roadmap
+# Roadmap
 
 •	Web Application Version (React)
 
 •	Multi-language support
 
 ________________________________________
-Contributors
+# Contributors
 1.	Abel Eskidner Email: abeleskinder69@gmail.com
 2.	Abdi Mudesir Email: abdimudesir43@gmail.com 
 3.	Imran Nuru Email: imrannuru290@gmail.com
