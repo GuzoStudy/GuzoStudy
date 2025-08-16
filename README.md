@@ -64,8 +64,7 @@ ________________________________________
 
 •	Web Application Version (React)
 
-•	Multi-language support
-
+• Mobile Application version (React native)
 ________________________________________
 # Contributors
 1.	Abel Eskidner Email: abeleskinder69@gmail.com
