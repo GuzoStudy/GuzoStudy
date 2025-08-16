@@ -72,9 +72,8 @@ ________________________________________
 2.	Abdi Mudesir Email: abdimudesir43@gmail.com 
 3.	Imran Nuru Email: imrannuru290@gmail.com
 4.	Mahilet Mulugeta Email: mahimahlet2002@gmail.com
-5.	Roba Molla Email: Robmolwel@gmail.com
-6.	Selam Kiflay Email: selamkiflay10@gmail.com
-7.	Dagmawi Temesgen Email: dagmawitemesgen542@gmail.com
+5.	Selam Kiflay Email: selamkiflay10@gmail.com
+6.	Dagmawi Temesgen Email: dagmawitemesgen542@gmail.com
 ________________________________________
 # License
 This project is licensed under the [MIT License](LICENSE) – see the LICENSE file for details.
