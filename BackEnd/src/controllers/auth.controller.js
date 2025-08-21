@@ -12,22 +12,42 @@ const { sendOtpToUser } = require('../utils/otp');
 exports.register = async (req, res) => {
   try {
     const { name, email, password, role } = req.body;
-    if (!email || !password) return res.status(400).json({ message: 'Email and password required' });
+    if (!email || !password) {
+      return res.status(400).json({ message: 'Email and password required' });
+    }
 
+    // 1. Check if email already exists
     const existing = await User.findOne({ email });
-    if (existing) return res.status(409).json({ message: 'Email already in use' });
+    if (existing) {
+      return res.status(409).json({ message: 'Email already in use' });
+    }
 
+    // 2. Create user (not verified yet)
     const hash = await bcrypt.hash(password, SALT_ROUNDS);
-    const user = new User({ name, email, password: hash, role, authProvider: 'email', verified: false });
+    const user = new User({
+      name,
+      email,
+      password: hash,
+      role,
+      authProvider: 'email',
+      verified: false
+    });
 
-    await sendOtpToUser(
+    // 3. Generate OTP and attach to user (but don’t save in otp.js)
+    const otp = await sendOtpToUser(
       user,
       'verification',
       'Verify your E-Learn account',
       'Your verification code is:'
     );
 
-    res.status(201).json({ message: 'Registered. Please check your email for OTP.' });
+    // 4. Save user with OTP fields
+    await user.save();
+
+    res.status(201).json({
+      message: 'Registered. Please check your email for OTP.',
+      debugOtp: process.env.NODE_ENV === 'development' ? otp : undefined // useful for testing
+    });
   } catch (err) {
     console.error(err);
     res.status(500).json({ message: 'Server error', error: err.message });

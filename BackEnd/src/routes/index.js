@@ -6,6 +6,12 @@ const role = require('../middlewares/role.middleware');
 
 router.use('/auth', authRoutes);
 
+const meetingRoutes = require('./meeting.routes');
+router.use('/', meetingRoutes); // mounts under /api/...
+const courseRoutes = require('./course.routes');
+router.use('/courses', courseRoutes);
+
+
 // Example protected route
 router.get('/protected', authMiddleware, (req, res) => {
   res.json({ message: 'You reached a protected route', user: req.user });
