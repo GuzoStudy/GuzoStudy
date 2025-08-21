@@ -8,12 +8,13 @@ function generateOTP() {
 }
 
 /**
- * Generates, hashes, stores OTP on user, sends it via email.
+ * Prepares OTP and updates the user object (doesn't save).
  * @param {Object} user - Mongoose user document
  * @param {string} type - 'verification' or 'reset'
  * @param {string} subject - Email subject
  * @param {string} message - Additional email message
  * @param {number} minutesValid - OTP expiry time in minutes
+ * @returns {string} The raw OTP (so caller can log or test)
  */
 async function sendOtpToUser(user, type, subject, message, minutesValid = 5) {
   const otp = generateOTP();
@@ -29,15 +30,18 @@ async function sendOtpToUser(user, type, subject, message, minutesValid = 5) {
     throw new Error('Invalid OTP type');
   }
 
-  await user.save();
-
+  // ✉️ Send email
   await sendEmail({
     to: user.email,
     subject,
-    html: `<p>${message}</p>
-           <h2>${otp}</h2>
-           <p>This code will expire in ${minutesValid} minutes.</p>`
+    html: `
+      <p>${message}</p>
+      <h2>${otp}</h2>
+      <p>This code will expire in ${minutesValid} minutes.</p>
+    `
   });
+
+  return otp; // helpful for debugging/testing in dev
 }
 
 module.exports = { sendOtpToUser };
