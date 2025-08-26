@@ -1,176 +1,137 @@
 const Course = require("../models/course.model");
-
 const Enrollment = require("../models/enrollment.model");
 
+// ----------------- TEACHER FEATURES -----------------
 
-
-// Create course (Teacher)
-exports.createCourse = async (req, res) => {
-  try {
-    const { title, description } = req.body;
-    const course = new Course({
-      title,
-      description,
-      teacher: req.user.id,
-      students: [],
-      lessons: [],
-      progress: {} // track student progress
-    });
-    await course.save();
-    res.status(201).json(course);
-  } catch (err) {
-    res.status(500).json({ message: "Error creating course", error: err.message });
-  }
-};
-
-// Add lesson (Teacher)
-exports.addLesson = async (req, res) => {
+// Update course (Teacher)
+exports.updateCourse = async (req, res) => {
   try {
     const { id } = req.params;
-    const { title, content } = req.body;
+    const { title, description } = req.body;
     const course = await Course.findById(id);
     if (!course) return res.status(404).json({ message: "Course not found" });
 
-    // Only teacher who owns the course
     if (course.teacher.toString() !== req.user.id) {
       return res.status(403).json({ message: "Not authorized" });
     }
 
-    const newLesson = { title, content };
-    course.lessons.push(newLesson);
+    course.title = title || course.title;
+    course.description = description || course.description;
     await course.save();
 
-    res.json(course);
+    res.json({ message: "Course updated", course });
   } catch (err) {
-    res.status(500).json({ message: "Error adding lesson", error: err.message });
+    res.status(500).json({ message: "Error updating course", error: err.message });
   }
 };
 
-
-// Enroll in course (Student)
-exports.enrollInCourse = async (req, res) => {
+// Delete course (Teacher)
+exports.deleteCourse = async (req, res) => {
   try {
-    const { id } = req.params; // courseId
+    const { id } = req.params;
     const course = await Course.findById(id);
     if (!course) return res.status(404).json({ message: "Course not found" });
 
-    // Check if already enrolled
-    const existingEnrollment = await Enrollment.findOne({
-      student: req.user.id,
-      course: id,
-    });
-
-    if (existingEnrollment) {
-      return res.json({ message: "Already enrolled", course });
+    if (course.teacher.toString() !== req.user.id) {
+      return res.status(403).json({ message: "Not authorized" });
     }
 
-    // Create enrollment record
-    const enrollment = new Enrollment({
-      student: req.user.id,
-      course: id,
-      progress: course.lessons.map((lesson) => ({
-        lessonId: lesson._id,
-        completed: false,
-      })),
-    });
-    await enrollment.save();
+    await Enrollment.deleteMany({ course: id }); // clean up enrollments
+    await course.deleteOne();
 
-    // Update course enrolledStudents list
-    if (!course.enrolledStudents.includes(req.user.id)) {
-      course.enrolledStudents.push(req.user.id);
-      await course.save();
-    }
-
-    res.json({ message: "Enrolled successfully", enrollment });
+    res.json({ message: "Course deleted successfully" });
   } catch (err) {
-    res
-      .status(500)
-      .json({ message: "Error enrolling in course", error: err.message });
+    res.status(500).json({ message: "Error deleting course", error: err.message });
   }
 };
 
-// Complete lesson (Student)
-exports.completeLesson = async (req, res) => {
+// Update lesson (Teacher)
+exports.updateLesson = async (req, res) => {
   try {
-    const { id, lessonId } = req.params; // courseId and lessonId
+    const { id, lessonId } = req.params;
+    const { title, content } = req.body;
+    const course = await Course.findById(id);
+    if (!course) return res.status(404).json({ message: "Course not found" });
 
-    const enrollment = await Enrollment.findOne({
-      student: req.user.id,
-      course: id,
-    });
-    if (!enrollment) {
-      return res
-        .status(403)
-        .json({ message: "You are not enrolled in this course" });
+    if (course.teacher.toString() !== req.user.id) {
+      return res.status(403).json({ message: "Not authorized" });
     }
 
-    // Find lesson progress entry
-    const lessonProgress = enrollment.progress.find(
-      (p) => p.lessonId.toString() === lessonId
-    );
+    const lesson = course.lessons.id(lessonId);
+    if (!lesson) return res.status(404).json({ message: "Lesson not found" });
 
-    if (!lessonProgress) {
-      return res.status(404).json({ message: "Lesson not found in progress" });
-    }
+    lesson.title = title || lesson.title;
+    lesson.content = content || lesson.content;
+    await course.save();
 
-    lessonProgress.completed = true;
-    await enrollment.save();
-
-    res.json({
-      message: `Lesson ${lessonId} marked as completed`,
-      progress: enrollment.progress,
-    });
+    res.json({ message: "Lesson updated", course });
   } catch (err) {
-    res
-      .status(500)
-      .json({ message: "Error completing lesson", error: err.message });
+    res.status(500).json({ message: "Error updating lesson", error: err.message });
   }
 };
 
-// Get course progress (Student)
-exports.getProgress = async (req, res) => {
+// Delete lesson (Teacher)
+exports.deleteLesson = async (req, res) => {
   try {
-    const { id } = req.params; // courseId
-    const enrollment = await Enrollment.findOne({
-      student: req.user.id,
-      course: id,
-    });
+    const { id, lessonId } = req.params;
+    const course = await Course.findById(id);
+    if (!course) return res.status(404).json({ message: "Course not found" });
 
-    if (!enrollment) {
-      return res
-        .status(403)
-        .json({ message: "You are not enrolled in this course" });
+    if (course.teacher.toString() !== req.user.id) {
+      return res.status(403).json({ message: "Not authorized" });
     }
 
-    const completedLessons = enrollment.progress.filter((p) => p.completed)
-      .length;
-    const totalLessons = enrollment.progress.length;
-    const progressPercent =
-      totalLessons > 0 ? (completedLessons / totalLessons) * 100 : 0;
+    course.lessons = course.lessons.filter((l) => l._id.toString() !== lessonId);
+    await course.save();
 
-    res.json({
-      courseId: id,
-      studentId: req.user.id,
-      completedLessons,
-      totalLessons,
-      progressPercent: progressPercent.toFixed(2) + "%",
-    });
+    res.json({ message: "Lesson deleted", course });
   } catch (err) {
-    res
-      .status(500)
-      .json({ message: "Error fetching progress", error: err.message });
+    res.status(500).json({ message: "Error deleting lesson", error: err.message });
   }
 };
 
-// Search courses (Public)
-exports.searchCourses = async (req, res) => {
+// Teacher’s created courses
+exports.getTeacherCourses = async (req, res) => {
   try {
-    const { q } = req.query;
-    const courses = await Course.find({
-      title: { $regex: q || "", $options: "i" }
-    });
+    const courses = await Course.find({ teacher: req.user.id });
     res.json(courses);
   } catch (err) {
-    res.status(500).json({ message: "Error searching courses", error: err.message });
+    res.status(500).json({ message: "Error fetching teacher courses", error: err.message });
+  }
+};
+
+// ----------------- STUDENT FEATURES -----------------
+
+// Student’s enrolled courses
+exports.getStudentCourses = async (req, res) => {
+  try {
+    const enrollments = await Enrollment.find({ student: req.user.id }).populate("course");
+    res.json(enrollments);
+  } catch (err) {
+    res.status(500).json({ message: "Error fetching student courses", error: err.message });
+  }
+};
+
+// ----------------- PUBLIC FEATURES -----------------
+
+// Get all courses
+exports.getAllCourses = async (req, res) => {
+  try {
+    const courses = await Course.find().populate("teacher", "name email");
+    res.json(courses);
+  } catch (err) {
+    res.status(500).json({ message: "Error fetching courses", error: err.message });
+  }
+};
+
+// Get single course
+exports.getCourseById = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const course = await Course.findById(id).populate("teacher", "name email");
+    if (!course) return res.status(404).json({ message: "Course not found" });
+    res.json(course);
+  } catch (err) {
+    res.status(500).json({ message: "Error fetching course", error: err.message });
   }
 };
