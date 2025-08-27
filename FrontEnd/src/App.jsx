@@ -5,7 +5,6 @@ import Login from '../src/pages/Login';
 import SignUp from '../src/pages/SignUp';
 import Explore from '../src/pages/Explore';
 import TeachOnG from './components/TeachOnG';
-import ChatBot from './components/ChatBot';
 
 function App() {
   const [setUserRole] = useState(null); // "teacher" or "student"
@@ -26,7 +25,6 @@ function App() {
 
         {/* Dashboards */}
       </Routes>
-      <ChatBot />
     </div>
   );
 }
