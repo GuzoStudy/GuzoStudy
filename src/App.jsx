@@ -8,8 +8,8 @@ import Courses from "./pages/Courses";
 import MyCourses from "./pages/MyCourses";
 import CourseDetail from "./pages/CourseDetail";
 import Profile from "./pages/Profile";
-// import AdminDashboard from "./pages/AdminDashboard";
-
+// import AdminDashboard from "./components/AdminDashboard";
+import AdminDashboard from "./components/AdminDashboard"
 function App() {
   return (
     <Router>
@@ -21,7 +21,7 @@ function App() {
           <Route path="/my-courses" element={<MyCourses />} />
           <Route path="/course/:id" element={<CourseDetail />} />
           <Route path="/profile" element={<Profile />} />
-          {/* <Route path="/admin" element={<AdminDashboard />} /> */}
+          <Route path="/dashboard-admin" element={<AdminDashboard />} />
         </Routes>
       </div>
     </Router>

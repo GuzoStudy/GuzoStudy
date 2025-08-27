@@ -69,6 +69,8 @@ const MyCourses = () => {
     }
   ];
 
+  
+
   return (
     <div className="my-courses-page">
       <div className="page-header">
