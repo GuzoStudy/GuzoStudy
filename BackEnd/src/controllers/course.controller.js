@@ -166,8 +166,7 @@ exports.getStudentCourses = async (req, res) => {
 
 // ----------------- PUBLIC FEATURES -----------------
 
-// Get all courses
-// Get all courses
+
 exports.getAllCourses = async (req, res) => {
   try {
     console.log("🟢 getAllCourses function called");
@@ -211,6 +210,7 @@ exports.getCourseById = async (req, res) => {
     res.status(500).json({ message: "Error fetching course", error: err.message });
   }
 };
+
 // Search courses
 exports.searchCourses = async (req, res) => {
   try {

@@ -1,5 +1,6 @@
 const express = require('express');
 const router = express.Router();
+console.log(">> index.js is being executed");
 
 const authRoutes = require('./auth.routes');
 const adminRoutes = require('./admin.routes');
@@ -28,5 +29,6 @@ router.get('/protected', authMiddleware, (req, res) => {
 router.get('/admin-only', authMiddleware, role(['admin']), (req, res) => {
   res.json({ message: 'Admin area' });
 });
-
+console.log(">> Exporting router with paths:", router.stack.map(r => r.route?.path || r.name));
 module.exports = router;
+
