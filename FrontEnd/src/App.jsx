@@ -22,6 +22,11 @@ function App() {
         <Route path="/signup" element={<SignUp onSignUp={handleSignUp} />} />
         <Route path="/teach" element={<TeachOnG />} />
         <Route path="/explore" element={<Explore />} />
+        <Route path="/sdashbord" element={<StudantDashboard />} />
+          <Route path="/Studntscourses" element={<CoursesStudent />  } />
+          <Route path="/myCourse" element={<MyCoursesStudent />  } />
+          <Route path="/Studentcourse/:id" element={<CourseDetailStudent />  } />
+          <Route path="/Studentprofile" element={<ProfileStudent />  } />
 
         {/* Dashboards */}
       </Routes>
