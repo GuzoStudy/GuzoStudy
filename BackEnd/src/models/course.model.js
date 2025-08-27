@@ -1,43 +1,51 @@
 const mongoose = require("mongoose");
 
-const lessonSchema = new mongoose.Schema({
+const LessonSchema = new mongoose.Schema({
   title: { type: String, required: true },
   description: String,
-  videoUrl: String,  // hosted/streaming link
-  fileUrl: String,   // downloadable file
-  order: { type: Number, default: 0 },
-});
+  videoUrl: String,        // stored video link (e.g. S3, Cloudinary, etc.)
+  fileUrl: String,         // downloadable file (PDF, slides, etc.)
+  order: { type: Number, default: 0 }, // lesson order inside the course
+}, { timestamps: true });
 
-const liveSessionSchema = new mongoose.Schema({
-  title: String,
-  scheduledAt: Date,
-  duration: Number,       // in minutes
-  meetingLink: String,    // Jitsi/Zoom/WebRTC
-  recordingUrl: String,   // if available
-});
+const ReviewSchema = new mongoose.Schema({
+  user: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
+  rating: { type: Number, min: 1, max: 5, required: true },
+  comment: String,
+}, { timestamps: true });
 
-const progressSchema = new mongoose.Schema({
-  student: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
-  lesson: { type: mongoose.Schema.Types.ObjectId },
-  completed: { type: Boolean, default: false },
-  completedAt: Date,
-});
+const CourseSchema = new mongoose.Schema({
+  title: { type: String, required: true },
+  description: { type: String, required: true },
 
-const courseSchema = new mongoose.Schema(
-  {
-    title: { type: String, required: true, trim: true },
-    description: { type: String, required: true },
-    category: { type: String },
-    teacher: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
-    thumbnailUrl: String,
-    lessons: [lessonSchema],
-    liveSessions: [liveSessionSchema],   // 🔥 New: live video support
-    enrolledStudents: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
-    progress: [progressSchema],
-    tags: [String],
-    price: { type: Number, default: 0 }, // 0 = free
-  },
-  { timestamps: true }
-);
+  teacher: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
 
-module.exports = mongoose.model("Course", courseSchema);
+  category: { type: String, required: true },   // e.g. Programming, Business, etc.
+  tags: [String],                               // e.g. ["React", "Node", "Web Dev"]
+  language: { type: String, default: "English" },
+
+  price: { type: Number, default: 0 },          // 0 = free course
+  thumbnail: String,
+
+  lessons: [LessonSchema],
+
+  reviews: [ReviewSchema],
+  averageRating: { type: Number, default: 0 },
+
+  enrollmentCount: { type: Number, default: 0 },
+
+}, { timestamps: true });
+
+// Auto-update averageRating before saving course
+CourseSchema.methods.calculateAverageRating = function () {
+  if (this.reviews.length === 0) {
+    this.averageRating = 0;
+  } else {
+    const total = this.reviews.reduce((acc, r) => acc + r.rating, 0);
+    this.averageRating = total / this.reviews.length;
+  }
+  return this.averageRating;
+};
+
+module.exports = mongoose.model("Course", CourseSchema);
+
