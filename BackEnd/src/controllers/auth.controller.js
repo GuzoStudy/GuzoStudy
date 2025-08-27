@@ -1,5 +1,3 @@
-
-
 const bcrypt = require('bcrypt');
 const User = require('../models/user.model');
 const crypto = require('crypto');
@@ -9,31 +7,32 @@ const { signAccessToken, signRefreshToken, verifyRefreshToken } = require('../ut
 const SALT_ROUNDS = 10;
 const { sendOtpToUser } = require('../utils/otp');
 
+
 exports.register = async (req, res) => {
   try {
-    const { name, email, password, role } = req.body;
+    const { name, email, password } = req.body; 
     if (!email || !password) {
       return res.status(400).json({ message: 'Email and password required' });
     }
 
-    // 1. Check if email already exists
+   
     const existing = await User.findOne({ email });
     if (existing) {
       return res.status(409).json({ message: 'Email already in use' });
     }
 
-    // 2. Create user (not verified yet)
+    
     const hash = await bcrypt.hash(password, SALT_ROUNDS);
     const user = new User({
       name,
       email,
       password: hash,
-      role,
+      role: 'student', 
       authProvider: 'email',
       verified: false
     });
 
-    // 3. Generate OTP and attach to user (but don’t save in otp.js)
+    
     const otp = await sendOtpToUser(
       user,
       'verification',
@@ -54,6 +53,9 @@ exports.register = async (req, res) => {
   }
 };
 
+/**
+ * VERIFY OTP
+ */
 exports.verifyOtp = async (req, res) => {
   try {
     const { email, otp } = req.body;
@@ -81,7 +83,9 @@ exports.verifyOtp = async (req, res) => {
   }
 };
 
-
+/**
+ * LOGIN
+ */
 exports.login = async (req, res) => {
   try {
     const { email, password } = req.body;
@@ -98,24 +102,26 @@ exports.login = async (req, res) => {
     const accessToken = signAccessToken(payload);
     const refreshToken = signRefreshToken(payload);
 
-    // store refresh token in DB (so we can revoke)
     user.refreshTokens.push(refreshToken);
     await user.save();
 
-    // For mobile you will return tokens in JSON. For web you might also set an httpOnly cookie.
-    res.json({ accessToken, refreshToken, user: { id: user._id, email: user.email, role: user.role } });
+    res.json({ 
+      accessToken, 
+      refreshToken, 
+      user: { id: user._id, email: user.email, role: user.role } 
+    });
   } catch (err) {
     console.error(err);
     res.status(500).json({ message: 'Server error' });
   }
 };
 
+
 exports.refresh = async (req, res) => {
   try {
     const { refreshToken } = req.body;
     if (!refreshToken) return res.status(400).json({ message: 'Refresh token required' });
 
-    
     const payload = verifyRefreshToken(refreshToken);
     const user = await User.findById(payload.id);
     if (!user) return res.status(401).json({ message: 'User not found' });
@@ -124,7 +130,6 @@ exports.refresh = async (req, res) => {
     const newAccess = signAccessToken({ id: user._id.toString(), role: user.role });
     const newRefresh = signRefreshToken({ id: user._id.toString(), role: user.role });
 
-    
     user.refreshTokens = user.refreshTokens.filter(t => t !== refreshToken);
     user.refreshTokens.push(newRefresh);
     await user.save();
@@ -136,12 +141,14 @@ exports.refresh = async (req, res) => {
   }
 };
 
+
+ // LOGOUT
+ 
 exports.logout = async (req, res) => {
   try {
     const { refreshToken } = req.body;
     if (!refreshToken) return res.status(400).json({ message: 'Refresh token required' });
 
-    // remove from DB
     const payload = verifyRefreshToken(refreshToken);
     const user = await User.findById(payload.id);
     if (user) {
@@ -155,6 +162,8 @@ exports.logout = async (req, res) => {
     res.status(400).json({ message: 'Error logging out', error: err.message });
   }
 };
+
+
 exports.forgotPassword = async (req, res) => {
   try {
     const { email } = req.body;
@@ -178,7 +187,6 @@ exports.forgotPassword = async (req, res) => {
 };
 
 
-// Reset Password using OTP
 exports.resetPassword = async (req, res) => {
   try {
     const { email, otp, newPassword } = req.body;
