@@ -2,6 +2,58 @@ const Course = require("../models/course.model");
 const Enrollment = require("../models/enrollment.model");
 
 // ----------------- TEACHER FEATURES -----------------
+// Create course (Teacher)
+exports.createCourse = async (req, res) => {
+  try {
+    const { title, description, category, tags, language, price, thumbnail } = req.body;
+
+    const newCourse = new Course({
+      title,
+      description,
+      category,
+      tags,
+      language,
+      price,
+      thumbnail,
+      teacher: req.user.id, // from auth middleware
+    });
+
+    await newCourse.save();
+    res.status(201).json({ message: "Course created successfully", course: newCourse });
+  } catch (err) {
+    res.status(500).json({ message: "Error creating course", error: err.message });
+  }
+};
+// Add lesson (Teacher)
+exports.createLesson = async (req, res) => {
+  try {
+    const { id } = req.params; // courseId
+    const { title, description, videoUrl, fileUrl, order } = req.body;
+
+    const course = await Course.findById(id);
+    if (!course) return res.status(404).json({ message: "Course not found" });
+
+    if (course.teacher.toString() !== req.user.id) {
+      return res.status(403).json({ message: "Not authorized" });
+    }
+
+    const newLesson = {
+      title,
+      description,
+      videoUrl,
+      fileUrl,
+      order: order || course.lessons.length + 1,
+    };
+
+    course.lessons.push(newLesson);
+    await course.save();
+
+    res.status(201).json({ message: "Lesson added successfully", course });
+  } catch (err) {
+    res.status(500).json({ message: "Error adding lesson", error: err.message });
+  }
+};
+
 
 // Update course (Teacher)
 exports.updateCourse = async (req, res) => {
@@ -115,11 +167,24 @@ exports.getStudentCourses = async (req, res) => {
 // ----------------- PUBLIC FEATURES -----------------
 
 // Get all courses
+// Get all courses
 exports.getAllCourses = async (req, res) => {
   try {
+    console.log("🟢 getAllCourses function called");
+    console.log("Request URL:", req.originalUrl);
+    
     const courses = await Course.find().populate("teacher", "name email");
+    console.log("📊 Courses found:", courses.length);
+    
+    if (courses.length === 0) {
+      console.log("ℹ️ No courses found, returning empty array");
+      return res.json([]);
+    }
+    
+    console.log("✅ Sending courses response");
     res.json(courses);
   } catch (err) {
+    console.error("❌ Error in getAllCourses:", err.message);
     res.status(500).json({ message: "Error fetching courses", error: err.message });
   }
 };
@@ -127,11 +192,70 @@ exports.getAllCourses = async (req, res) => {
 // Get single course
 exports.getCourseById = async (req, res) => {
   try {
+    console.log("🟢 getCourseById function called");
+    console.log("Request URL:", req.originalUrl);
+    console.log("Course ID from params:", req.params.id);
+    
     const { id } = req.params;
     const course = await Course.findById(id).populate("teacher", "name email");
-    if (!course) return res.status(404).json({ message: "Course not found" });
+    
+    if (!course) {
+      console.log("❌ Course not found with ID:", id);
+      return res.status(404).json({ message: "Course not found" });
+    }
+    
+    console.log("✅ Course found:", course.title);
     res.json(course);
   } catch (err) {
+    console.error("❌ Error in getCourseById:", err.message);
     res.status(500).json({ message: "Error fetching course", error: err.message });
+  }
+};
+// Search courses
+exports.searchCourses = async (req, res) => {
+  try {
+    const { query, category, language, minPrice, maxPrice, sortBy } = req.query;
+    let filter = {};
+    
+    // Text search
+    if (query) {
+      filter.$or = [
+        { title: { $regex: query, $options: "i" } },
+        { description: { $regex: query, $options: "i" } },
+        { tags: { $in: [new RegExp(query, "i")] } }
+      ];
+    }
+    
+    // Filter by category
+    if (category) filter.category = category;
+    
+    // Filter by language
+    if (language) filter.language = language;
+    
+    // Filter by price range
+    if (minPrice || maxPrice) {
+      filter.price = {};
+      if (minPrice) filter.price.$gte = parseFloat(minPrice);
+      if (maxPrice) filter.price.$lte = parseFloat(maxPrice);
+    }
+    
+    // Build sort object
+    let sort = {};
+    if (sortBy) {
+      if (sortBy === 'price_asc') sort.price = 1;
+      if (sortBy === 'price_desc') sort.price = -1;
+      if (sortBy === 'newest') sort.createdAt = -1;
+      if (sortBy === 'popular') sort.enrollmentCount = -1;
+    } else {
+      sort.createdAt = -1; // Default sort by newest
+    }
+    
+    const courses = await Course.find(filter)
+      .populate("teacher", "name email")
+      .sort(sort);
+    
+    res.json(courses);
+  } catch (err) {
+    res.status(500).json({ message: "Error searching courses", error: err.message });
   }
 };
