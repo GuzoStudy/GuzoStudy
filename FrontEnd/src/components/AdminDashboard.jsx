@@ -1,10 +1,11 @@
 import React, { useState } from 'react';
 import Sidebar from './Sidebar';
-import StudentsTeachersManager from './StudentsTeachersManager';
-import TeacherVerification from './TeacherVerification';
+// import StudentsTeachersManager from './StudentsTeachersManager';
+import StudentsTeachersManager from './StudentsTeachersManger'
+import TeacherVerification from './TeacherVerfication';
 import CoursesMonitor from './CoursesMonitor';
 import PaymentsSubscriptions from './PaymentsSubscriptions';
-import FraudDetection from './FraudDetection';
+import FraudDetection from './FraudDeection';
 import AnalyticsDashboard from './AnalyticsDashboard';
 
 const AdminDashboard = () => {
