@@ -5,7 +5,12 @@ import Login from '../src/pages/Login';
 import SignUp from '../src/pages/SignUp';
 import Explore from '../src/pages/Explore';
 import TeachOnG from './components/TeachOnG';
-
+import CourseDetailStudent from "./pages/CourseDetailStudent";
+import MyCoursesStudent from "../pages/MyCoursesStudent";
+import CoursesStudent from "../pages/CoursesStudent";
+import StudantDashboard from "../pages/StudentDashboard";
+import ProfileStudent from "../pages/ProfileStudent";
+import AdminDashboard from "./components/AdminDashboard";
 function App() {
   const [setUserRole] = useState(null); // "teacher" or "student"
 
@@ -27,6 +32,8 @@ function App() {
           <Route path="/myCourse" element={<MyCoursesStudent />  } />
           <Route path="/Studentcourse/:id" element={<CourseDetailStudent />  } />
           <Route path="/Studentprofile" element={<ProfileStudent />  } />
+          <Route path="/admin" element={<AdminDashboard />  } />
+
 
         {/* Dashboards */}
       </Routes>
