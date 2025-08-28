@@ -19,91 +19,83 @@ const ProfileStudent = () => {
   const [activeTab, setActiveTab] = useState('overview');
   
   const [profile, setProfile] = useState({
-    firstName: 'John',
-    lastName: 'Doe',
-    email: 'john.doe@example.com',
-    phone: '+1 (555) 123-4567',
-    location: 'San Francisco, CA',
-    bio: 'Passionate learner and developer with a keen interest in modern web technologies. Always eager to expand my skill set and take on new challenges.',
-    joinDate: '2023-06-15',
-    timezone: 'Pacific Time (PT)',
-    learningGoal: 'Complete 5 courses this year',
-    weeklyGoal: '10 hours per week'
+    firstName: 'Nahom',
+    lastName: 'Tesfaye',
+    email: 'nahom.tesfaye@guzo.et',
+    phone: '+251 911 234 567',
+    location: 'Addis Ababa, Ethiopia',
+    bio: 'Curious learner exploring programming and design. I believe education is the key to building the future of Ethiopia.',
+    joinDate: '2024-03-10',
+    timezone: 'East Africa Time (EAT)',
+    learningGoal: 'Finish 10 Guzo courses in 2025',
+    weeklyGoal: '12 hours per week'
   });
 
   const achievements = [
     {
       id: 1,
-      title: 'React Master',
-      description: 'Completed React Development Course',
+      title: 'Amharic Web Developer',
+      description: 'Completed Guzo’s React in Amharic course',
       date: '2024-12-15',
       icon: Award,
       color: 'text-blue-600'
     },
     {
       id: 2,
-      title: 'Design Enthusiast',
-      description: 'Completed UI/UX Design Fundamentals',
+      title: 'Digital Innovator',
+      description: 'Presented project in local hackathon',
       date: '2024-11-28',
       icon: Award,
       color: 'text-purple-600'
     },
     {
       id: 3,
-      title: 'Early Bird',
-      description: 'Joined the platform in 2023',
-      date: '2023-06-15',
+      title: 'Early Guzo Explorer',
+      description: 'Joined Guzo community in 2024',
+      date: '2024-03-10',
       icon: Calendar,
       color: 'text-green-600'
     }
   ];
 
   const learningStats = [
-    { label: 'Courses Completed', value: '3', icon: BookOpen },
-    { label: 'Total Study Time', value: '127h', icon: Clock },
-    { label: 'Current Streak', value: '15 days', icon: Target },
-    { label: 'Certificates Earned', value: '2', icon: Award }
+    { label: 'Courses Completed', value: '5', icon: BookOpen },
+    { label: 'Total Study Time', value: '142h', icon: Clock },
+    { label: 'Current Streak', value: '21 days', icon: Target },
+    { label: 'Certificates Earned', value: '3', icon: Award }
   ];
 
   const recentActivity = [
     {
       id: 1,
       type: 'course_completed',
-      title: 'Completed "React Hooks Deep Dive"',
-      date: '2 hours ago',
+      title: 'Finished "JavaScript ከመሠረት እስከ ላይ"',
+      date: '4 hours ago',
       icon: BookOpen
     },
     {
       id: 2,
       type: 'achievement',
-      title: 'Earned "React Master" achievement',
-      date: '1 day ago',
+      title: 'Earned "Amharic Web Developer" certificate',
+      date: '2 days ago',
       icon: Award
     },
     {
       id: 3,
       type: 'course_started',
       title: 'Started "Python for Data Science"',
-      date: '3 days ago',
-      icon: BookOpen
-    },
-    {
-      id: 4,
-      type: 'lesson_completed',
-      title: 'Completed "Advanced JavaScript Concepts"',
-      date: '5 days ago',
+      date: '1 week ago',
       icon: BookOpen
     }
   ];
 
   const handleSave = () => {
     setIsEditing(false);
-    // Here you would typically save to backend
+    // Save changes to backend here
   };
 
   const handleCancel = () => {
     setIsEditing(false);
-    // Reset form data if needed
   };
 
   const handleInputChange = (field, value) => {
@@ -111,40 +103,46 @@ const ProfileStudent = () => {
   };
 
   return (
-    <div className="profile-page">
-      <div className="profile-header">
-        <div className="profile-avatar">
-          <User size={48} />
+    <div className="max-w-6xl mx-auto">
+      {/* Profile Header */}
+      <div className="bg-white rounded-2xl p-6 md:p-10 mb-10 shadow-md flex flex-col md:flex-row items-center md:items-start gap-6 border border-gray-100">
+        <div className="w-24 h-24 rounded-full bg-gradient-to-br from-blue-600 to-green-500 flex items-center justify-center text-white">
+          <User size={40} />
         </div>
-        <div className="profile-info">
-          <h1>{profile.firstName} {profile.lastName}</h1>
-          <p className="profile-email">{profile.email}</p>
-          <div className="profile-meta">
-            <div className="meta-item">
-              <Calendar size={16} />
-              <span>Joined {new Date(profile.joinDate).toLocaleDateString()}</span>
-            </div>
-            <div className="meta-item">
-              <MapPin size={16} />
-              <span>{profile.location}</span>
-            </div>
+
+        <div className="flex-1 text-center md:text-left">
+          <h1 className="text-2xl md:text-3xl font-bold text-gray-900">
+            {profile.firstName} {profile.lastName}
+          </h1>
+          <p className="text-gray-500">{profile.email}</p>
+
+          <div className="flex flex-wrap justify-center md:justify-start gap-4 mt-3 text-sm text-gray-600">
+            <span className="flex items-center gap-1"><Calendar size={16}/> Joined {new Date(profile.joinDate).toLocaleDateString()}</span>
+            <span className="flex items-center gap-1"><MapPin size={16}/> {profile.location}</span>
           </div>
         </div>
-        <div className="profile-actions">
+
+        <div>
           {!isEditing ? (
-            <button className="btn-primary" onClick={() => setIsEditing(true)}>
-              <Edit2 size={16} />
-              Edit Profile
+            <button 
+              className="px-4 py-2 bg-blue-600 text-white rounded-lg flex items-center gap-2 hover:bg-blue-700"
+              onClick={() => setIsEditing(true)}
+            >
+              <Edit2 size={16}/> Edit Profile
             </button>
           ) : (
-            <div className="edit-actions">
-              <button className="btn-primary" onClick={handleSave}>
-                <Save size={16} />
-                Save
+            <div className="flex gap-2">
+              <button 
+                className="px-4 py-2 bg-green-600 text-white rounded-lg flex items-center gap-2 hover:bg-green-700"
+                onClick={handleSave}
+              >
+                <Save size={16}/> Save
               </button>
-              <button className="btn-secondary" onClick={handleCancel}>
-                <X size={16} />
-                Cancel
+              <button 
+                className="px-4 py-2 bg-gray-200 text-gray-800 rounded-lg flex items-center gap-2 hover:bg-gray-300"
+                onClick={handleCancel}
+              >
+                <X size={16}/> Cancel
               </button>
             </div>
           )}
@@ -152,525 +150,127 @@ const ProfileStudent = () => {
       </div>
 
       {/* Learning Stats */}
-      <div className="stats-section">
-        <h2>Learning Statistics</h2>
-        <div className="stats-grid">
+      <div className="mb-10">
+        <h2 className="text-xl font-semibold mb-4 text-gray-900">Your Learning on Guzo</h2>
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
           {learningStats.map((stat, index) => (
-            <div key={index} className="stat-card">
-              <div className="stat-icon">
-                <stat.icon size={24} />
+            <div key={index} className="bg-white rounded-xl p-5 shadow border border-gray-100 flex flex-col items-center">
+              <div className="w-12 h-12 bg-blue-50 text-blue-600 flex items-center justify-center rounded-xl mb-3">
+                <stat.icon size={24}/>
               </div>
-              <div className="stat-content">
-                <div className="stat-value">{stat.value}</div>
-                <div className="stat-label">{stat.label}</div>
-              </div>
+              <div className="text-2xl font-bold text-gray-900">{stat.value}</div>
+              <div className="text-sm text-gray-500">{stat.label}</div>
             </div>
           ))}
         </div>
       </div>
 
-      {/* Profile Tabs */}
-      <div className="profile-tabs">
-        <button
-          className={`tab ${activeTab === 'overview' ? 'active' : ''}`}
-          onClick={() => setActiveTab('overview')}
-        >
-          Overview
-        </button>
-        <button
-          className={`tab ${activeTab === 'achievements' ? 'active' : ''}`}
-          onClick={() => setActiveTab('achievements')}
-        >
-          Achievements
-        </button>
-        <button
-          className={`tab ${activeTab === 'activity' ? 'active' : ''}`}
-          onClick={() => setActiveTab('activity')}
-        >
-          Recent Activity
-        </button>
+      {/* Tabs */}
+      <div className="border-b border-gray-200 flex gap-6 mb-6">
+        {['overview','achievements','activity'].map(tab => (
+          <button 
+            key={tab}
+            onClick={() => setActiveTab(tab)}
+            className={`pb-2 font-medium transition-colors ${
+              activeTab === tab ? 'text-blue-600 border-b-2 border-blue-600' : 'text-gray-500 hover:text-gray-700'
+            }`}
+          >
+            {tab === 'overview' ? 'Overview' : tab === 'achievements' ? 'Achievements' : 'Recent Activity'}
+          </button>
+        ))}
       </div>
 
       {/* Tab Content */}
-      <div className="tab-content">
+      <div className="bg-white rounded-xl p-6 shadow border border-gray-100">
         {activeTab === 'overview' && (
-          <div className="overview-content">
-            <div className="profile-details">
-              <div className="card">
-                <h3>Personal Information</h3>
-                <div className="form-grid">
-                  <div className="form-group">
-                    <label className="form-label">First Name</label>
+          <div className="grid md:grid-cols-2 gap-6">
+            {/* Personal Info */}
+            <div>
+              <h3 className="font-semibold text-gray-900 mb-4">Personal Information</h3>
+              <div className="space-y-3">
+                {['firstName','lastName','email','phone','location','bio'].map((field) => (
+                  <div key={field}>
+                    <label className="text-sm text-gray-500 capitalize">{field}</label>
                     {isEditing ? (
-                      <input
-                        type="text"
-                        value={profile.firstName}
-                        onChange={(e) => handleInputChange('firstName', e.target.value)}
-                        className="form-input"
-                      />
+                      field === 'bio' ? (
+                        <textarea 
+                          value={profile[field]}
+                          onChange={(e)=>handleInputChange(field,e.target.value)}
+                          className="w-full mt-1 p-2 border rounded-lg"
+                        />
+                      ) : (
+                        <input 
+                          type="text"
+                          value={profile[field]}
+                          onChange={(e)=>handleInputChange(field,e.target.value)}
+                          className="w-full mt-1 p-2 border rounded-lg"
+                        />
+                      )
                     ) : (
-                      <p className="form-value">{profile.firstName}</p>
+                      <p className="text-gray-800 mt-1">{profile[field]}</p>
                     )}
                   </div>
-
-                  <div className="form-group">
-                    <label className="form-label">Last Name</label>
-                    {isEditing ? (
-                      <input
-                        type="text"
-                        value={profile.lastName}
-                        onChange={(e) => handleInputChange('lastName', e.target.value)}
-                        className="form-input"
-                      />
-                    ) : (
-                      <p className="form-value">{profile.lastName}</p>
-                    )}
-                  </div>
-
-                  <div className="form-group">
-                    <label className="form-label">Email</label>
-                    {isEditing ? (
-                      <input
-                        type="email"
-                        value={profile.email}
-                        onChange={(e) => handleInputChange('email', e.target.value)}
-                        className="form-input"
-                      />
-                    ) : (
-                      <p className="form-value">{profile.email}</p>
-                    )}
-                  </div>
-
-                  <div className="form-group">
-                    <label className="form-label">Phone</label>
-                    {isEditing ? (
-                      <input
-                        type="tel"
-                        value={profile.phone}
-                        onChange={(e) => handleInputChange('phone', e.target.value)}
-                        className="form-input"
-                      />
-                    ) : (
-                      <p className="form-value">{profile.phone}</p>
-                    )}
-                  </div>
-
-                  <div className="form-group full-width">
-                    <label className="form-label">Location</label>
-                    {isEditing ? (
-                      <input
-                        type="text"
-                        value={profile.location}
-                        onChange={(e) => handleInputChange('location', e.target.value)}
-                        className="form-input"
-                      />
-                    ) : (
-                      <p className="form-value">{profile.location}</p>
-                    )}
-                  </div>
-
-                  <div className="form-group full-width">
-                    <label className="form-label">Bio</label>
-                    {isEditing ? (
-                      <textarea
-                        value={profile.bio}
-                        onChange={(e) => handleInputChange('bio', e.target.value)}
-                        className="form-input"
-                        rows="3"
-                      />
-                    ) : (
-                      <p className="form-value">{profile.bio}</p>
-                    )}
-                  </div>
-                </div>
+                ))}
               </div>
+            </div>
 
-              <div className="card">
-                <h3>Learning Preferences</h3>
-                <div className="form-grid">
-                  <div className="form-group">
-                    <label className="form-label">Learning Goal</label>
+            {/* Preferences */}
+            <div>
+              <h3 className="font-semibold text-gray-900 mb-4">Learning Preferences</h3>
+              <div className="space-y-3">
+                {['learningGoal','weeklyGoal','timezone'].map(field => (
+                  <div key={field}>
+                    <label className="text-sm text-gray-500 capitalize">{field}</label>
                     {isEditing ? (
-                      <input
+                      <input 
                         type="text"
-                        value={profile.learningGoal}
-                        onChange={(e) => handleInputChange('learningGoal', e.target.value)}
-                        className="form-input"
+                        value={profile[field]}
+                        onChange={(e)=>handleInputChange(field,e.target.value)}
+                        className="w-full mt-1 p-2 border rounded-lg"
                       />
                     ) : (
-                      <p className="form-value">{profile.learningGoal}</p>
+                      <p className="text-gray-800 mt-1">{profile[field]}</p>
                     )}
                   </div>
-
-                  <div className="form-group">
-                    <label className="form-label">Weekly Goal</label>
-                    {isEditing ? (
-                      <input
-                        type="text"
-                        value={profile.weeklyGoal}
-                        onChange={(e) => handleInputChange('weeklyGoal', e.target.value)}
-                        className="form-input"
-                      />
-                    ) : (
-                      <p className="form-value">{profile.weeklyGoal}</p>
-                    )}
-                  </div>
-
-                  <div className="form-group full-width">
-                    <label className="form-label">Timezone</label>
-                    {isEditing ? (
-                      <select
-                        value={profile.timezone}
-                        onChange={(e) => handleInputChange('timezone', e.target.value)}
-                        className="form-input"
-                      >
-                        <option value="Pacific Time (PT)">Pacific Time (PT)</option>
-                        <option value="Mountain Time (MT)">Mountain Time (MT)</option>
-                        <option value="Central Time (CT)">Central Time (CT)</option>
-                        <option value="Eastern Time (ET)">Eastern Time (ET)</option>
-                      </select>
-                    ) : (
-                      <p className="form-value">{profile.timezone}</p>
-                    )}
-                  </div>
-                </div>
+                ))}
               </div>
             </div>
           </div>
         )}
 
         {activeTab === 'achievements' && (
-          <div className="achievements-content">
-            <div className="achievements-grid">
-              {achievements.map(achievement => (
-                <div key={achievement.id} className="achievement-card">
-                  <div className={`achievement-icon ${achievement.color}`}>
-                    <achievement.icon size={24} />
-                  </div>
-                  <div className="achievement-content">
-                    <h4>{achievement.title}</h4>
-                    <p>{achievement.description}</p>
-                    <span className="achievement-date">
-                      Earned on {new Date(achievement.date).toLocaleDateString()}
-                    </span>
-                  </div>
+          <div className="grid md:grid-cols-2 gap-6">
+            {achievements.map(item => (
+              <div key={item.id} className="flex items-start gap-4 p-4 border rounded-lg hover:shadow">
+                <div className={`p-3 rounded-lg bg-gray-50 ${item.color}`}>
+                  <item.icon size={24}/>
                 </div>
-              ))}
-            </div>
+                <div>
+                  <h4 className="font-semibold text-gray-900">{item.title}</h4>
+                  <p className="text-gray-600 text-sm">{item.description}</p>
+                  <p className="text-xs text-gray-400 mt-1">Earned {new Date(item.date).toLocaleDateString()}</p>
+                </div>
+              </div>
+            ))}
           </div>
         )}
 
         {activeTab === 'activity' && (
-          <div className="activity-content">
-            <div className="activity-list">
-              {recentActivity.map(activity => (
-                <div key={activity.id} className="activity-item">
-                  <div className="activity-icon">
-                    <activity.icon size={16} />
-                  </div>
-                  <div className="activity-content">
-                    <p>{activity.title}</p>
-                    <span className="activity-date">{activity.date}</span>
-                  </div>
+          <div className="space-y-4">
+            {recentActivity.map(item => (
+              <div key={item.id} className="flex items-center gap-3 p-3 border rounded-lg hover:shadow-sm">
+                <div className="p-2 rounded-lg bg-blue-50 text-blue-600">
+                  <item.icon size={18}/>
                 </div>
-              ))}
-            </div>
+                <div>
+                  <p className="text-gray-800">{item.title}</p>
+                  <span className="text-xs text-gray-500">{item.date}</span>
+                </div>
+              </div>
+            ))}
           </div>
         )}
       </div>
-
-      <style jsx>{`
-        .profile-page {
-          max-width: 1200px;
-          margin: 0 auto;
-        }
-        
-        .profile-header {
-          background: white;
-          border-radius: 1rem;
-          padding: 2rem;
-          margin-bottom: 2rem;
-          display: flex;
-          align-items: center;
-          gap: 2rem;
-          box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-        }
-        
-        .profile-avatar {
-          width: 5rem;
-          height: 5rem;
-          background: #2563eb;
-          color: white;
-          border-radius: 50%;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          flex-shrink: 0;
-        }
-        
-        .profile-info {
-          flex: 1;
-        }
-        
-        .profile-info h1 {
-          font-size: 2rem;
-          font-weight: 700;
-          color: #1e293b;
-          margin-bottom: 0.25rem;
-        }
-        
-        .profile-email {
-          color: #6b7280;
-          margin-bottom: 1rem;
-        }
-        
-        .profile-meta {
-          display: flex;
-          gap: 2rem;
-        }
-        
-        .meta-item {
-          display: flex;
-          align-items: center;
-          gap: 0.5rem;
-          font-size: 0.875rem;
-          color: #4b5563;
-        }
-        
-        .profile-actions {
-          flex-shrink: 0;
-        }
-        
-        .edit-actions {
-          display: flex;
-          gap: 0.75rem;
-        }
-        
-        .stats-section {
-          margin-bottom: 2rem;
-        }
-        
-        .stats-section h2 {
-          font-size: 1.5rem;
-          font-weight: 600;
-          color: #1e293b;
-          margin-bottom: 1rem;
-        }
-        
-        .stats-grid {
-          display: grid;
-          grid-template-columns: repeat(4, 1fr);
-          gap: 1.5rem;
-        }
-        
-        .stat-card {
-          background: white;
-          border-radius: 1rem;
-          padding: 1.5rem;
-          display: flex;
-          align-items: center;
-          gap: 1rem;
-          box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-        }
-        
-        .stat-icon {
-          width: 3rem;
-          height: 3rem;
-          background: #eff6ff;
-          color: #2563eb;
-          border-radius: 0.75rem;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-        }
-        
-        .stat-value {
-          font-size: 1.875rem;
-          font-weight: 700;
-          color: #1e293b;
-        }
-        
-        .stat-label {
-          font-size: 0.875rem;
-          color: #6b7280;
-        }
-        
-        .profile-tabs {
-          display: flex;
-          border-bottom: 1px solid #e2e8f0;
-          margin-bottom: 2rem;
-        }
-        
-        .tab {
-          background: none;
-          border: none;
-          padding: 1rem 1.5rem;
-          cursor: pointer;
-          font-weight: 500;
-          color: #6b7280;
-          border-bottom: 2px solid transparent;
-          transition: all 0.2s ease;
-        }
-        
-        .tab.active {
-          color: #2563eb;
-          border-bottom-color: #2563eb;
-        }
-        
-        .tab-content {
-          background: white;
-          border-radius: 1rem;
-          padding: 2rem;
-          box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-        }
-        
-        .profile-details {
-          display: grid;
-          gap: 2rem;
-        }
-        
-        .card h3 {
-          font-size: 1.25rem;
-          font-weight: 600;
-          color: #1e293b;
-          margin-bottom: 1.5rem;
-          padding-bottom: 0.75rem;
-          border-bottom: 1px solid #e2e8f0;
-        }
-        
-        .form-grid {
-          display: grid;
-          grid-template-columns: repeat(2, 1fr);
-          gap: 1.5rem;
-        }
-        
-        .form-group.full-width {
-          grid-column: span 2;
-        }
-        
-        .form-value {
-          padding: 0.75rem 0;
-          color: #4b5563;
-          margin: 0;
-        }
-        
-        .achievements-grid {
-          display: grid;
-          gap: 1.5rem;
-        }
-        
-        .achievement-card {
-          display: flex;
-          align-items: center;
-          gap: 1rem;
-          padding: 1.5rem;
-          background: #f8fafc;
-          border-radius: 0.75rem;
-          border: 1px solid #e2e8f0;
-        }
-        
-        .achievement-icon {
-          width: 3rem;
-          height: 3rem;
-          background: white;
-          border-radius: 0.75rem;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-        }
-        
-        .achievement-content h4 {
-          font-weight: 600;
-          color: #1e293b;
-          margin-bottom: 0.25rem;
-        }
-        
-        .achievement-content p {
-          color: #6b7280;
-          margin-bottom: 0.5rem;
-        }
-        
-        .achievement-date {
-          font-size: 0.75rem;
-          color: #9ca3af;
-        }
-        
-        .activity-list {
-          display: grid;
-          gap: 1rem;
-        }
-        
-        .activity-item {
-          display: flex;
-          align-items: center;
-          gap: 1rem;
-          padding: 1rem;
-          background: #f8fafc;
-          border-radius: 0.5rem;
-          border: 1px solid #e2e8f0;
-        }
-        
-        .activity-icon {
-          width: 2rem;
-          height: 2rem;
-          background: #2563eb;
-          color: white;
-          border-radius: 0.375rem;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          flex-shrink: 0;
-        }
-        
-        .activity-content p {
-          font-weight: 500;
-          color: #1e293b;
-          margin: 0 0 0.25rem 0;
-        }
-        
-        .activity-date {
-          font-size: 0.75rem;
-          color: #6b7280;
-        }
-        
-        @media (max-width: 1024px) {
-          .stats-grid {
-            grid-template-columns: repeat(2, 1fr);
-          }
-          
-          .form-grid {
-            grid-template-columns: 1fr;
-          }
-          
-          .form-group.full-width {
-            grid-column: span 1;
-          }
-        }
-        
-        @media (max-width: 768px) {
-          .profile-header {
-            flex-direction: column;
-            text-align: center;
-          }
-          
-          .profile-meta {
-            justify-content: center;
-          }
-          
-          .stats-grid {
-            grid-template-columns: 1fr;
-          }
-          
-          .edit-actions {
-            flex-direction: column;
-          }
-          
-          .profile-info h1 {
-            font-size: 1.5rem;
-          }
-        }
-      `}</style>
     </div>
   );
 };

@@ -9,7 +9,7 @@ const MyCoursesStudent = () => {
     {
       id: 1,
       title: 'Complete React Development Course',
-      instructor: 'Sarah Johnson',
+      instructor: 'helina semahg',
       progress: 75,
       totalLessons: 42,
       completedLessons: 32,
@@ -21,7 +21,7 @@ const MyCoursesStudent = () => {
     {
       id: 2,
       title: 'Advanced JavaScript ES6+',
-      instructor: 'Mike Chen',
+      instructor: 'Betelhim Samuel',
       progress: 45,
       totalLessons: 38,
       completedLessons: 17,
@@ -33,7 +33,7 @@ const MyCoursesStudent = () => {
     {
       id: 5,
       title: 'Python for Data Science',
-      instructor: 'Dr. Lisa Wang',
+      instructor: 'Sara Suleman',
       progress: 20,
       totalLessons: 45,
       completedLessons: 9,
@@ -48,7 +48,7 @@ const MyCoursesStudent = () => {
     {
       id: 3,
       title: 'UI/UX Design Fundamentals',
-      instructor: 'Emily Davis',
+      instructor: 'Hana selemon',
       completedDate: '2024-12-15',
       grade: 'A+',
       certificateAvailable: true,
@@ -59,7 +59,7 @@ const MyCoursesStudent = () => {
     {
       id: 4,
       title: 'Digital Marketing Strategy',
-      instructor: 'Alex Rodriguez',
+      instructor: 'Hiwot Abera',
       completedDate: '2024-11-28',
       grade: 'A',
       certificateAvailable: true,
