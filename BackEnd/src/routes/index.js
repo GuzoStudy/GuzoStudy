@@ -8,27 +8,25 @@ const meetingRoutes = require('./meeting.routes');
 const courseRoutes = require('./course.routes');
 const enrollmentRoutes = require('./enrollment.routes');
 
-const authMiddleware = require('../middlewares/auth.middleware');
-const role = require('../middlewares/role.middleware');
-
+const requireAuth = require('../middlewares/auth.middleware');
+const requireRole = require('../middlewares/role.middleware');
 
 router.use('/auth', authRoutes);
 router.use('/enrollments', enrollmentRoutes);
 router.use('/admin', adminRoutes);
 console.log("Admin routes registered");
-
 router.use('/meetings', meetingRoutes);
 router.use('/courses', courseRoutes);
 
-// Example protected route
-router.get('/protected', authMiddleware, (req, res) => {
+// Example protected route (auth only)
+router.get('/protected', requireAuth, (req, res) => {
   res.json({ message: 'You reached a protected route', user: req.user });
 });
 
 // Admin-only
-router.get('/admin-only', authMiddleware, role(['admin']), (req, res) => {
+router.get('/admin-only', requireAuth, requireRole(['admin']), (req, res) => {
   res.json({ message: 'Admin area' });
 });
+
 console.log(">> Exporting router with paths:", router.stack.map(r => r.route?.path || r.name));
 module.exports = router;
-

@@ -59,23 +59,32 @@ exports.createLesson = async (req, res) => {
 exports.updateCourse = async (req, res) => {
   try {
     const { id } = req.params;
-    const { title, description } = req.body;
-    const course = await Course.findById(id);
-    if (!course) return res.status(404).json({ message: "Course not found" });
+    const { title, description, category, tags, language, price, thumbnail } = req.body;
 
-    if (course.teacher.toString() !== req.user.id) {
-      return res.status(403).json({ message: "Not authorized" });
-    }
+    // Build update object dynamically
+    const updateFields = {};
+    if (title !== undefined) updateFields.title = title;
+    if (description !== undefined) updateFields.description = description;
+    if (category !== undefined) updateFields.category = category;
+    if (tags !== undefined) updateFields.tags = tags;
+    if (language !== undefined) updateFields.language = language;
+    if (price !== undefined) updateFields.price = price;
+    if (thumbnail !== undefined) updateFields.thumbnail = thumbnail;
 
-    course.title = title || course.title;
-    course.description = description || course.description;
-    await course.save();
+    const course = await Course.findOneAndUpdate(
+      { _id: id, teacher: req.user.id }, // ensures only teacher can update
+      { $set: updateFields },
+      { new: true, runValidators: true } // return updated doc, validate only provided fields
+    );
+
+    if (!course) return res.status(404).json({ message: "Course not found or not authorized" });
 
     res.json({ message: "Course updated", course });
   } catch (err) {
     res.status(500).json({ message: "Error updating course", error: err.message });
   }
 };
+
 
 // Delete course (Teacher)
 exports.deleteCourse = async (req, res) => {
@@ -98,29 +107,40 @@ exports.deleteCourse = async (req, res) => {
 };
 
 // Update lesson (Teacher)
+// Update lesson (Teacher)
 exports.updateLesson = async (req, res) => {
   try {
     const { id, lessonId } = req.params;
-    const { title, content } = req.body;
+    const { title, description, videoUrl, fileUrl, order } = req.body;
+
     const course = await Course.findById(id);
     if (!course) return res.status(404).json({ message: "Course not found" });
 
+    // Ensure only the teacher can update
     if (course.teacher.toString() !== req.user.id) {
       return res.status(403).json({ message: "Not authorized" });
     }
 
+    // Find the lesson inside the course
     const lesson = course.lessons.id(lessonId);
     if (!lesson) return res.status(404).json({ message: "Lesson not found" });
 
-    lesson.title = title || lesson.title;
-    lesson.content = content || lesson.content;
-    await course.save();
+    // Update only provided fields
+    if (title !== undefined) lesson.title = title;
+    if (description !== undefined) lesson.description = description;
+    if (videoUrl !== undefined) lesson.videoUrl = videoUrl;
+    if (fileUrl !== undefined) lesson.fileUrl = fileUrl;
+    if (order !== undefined) lesson.order = order;
+
+    // ✅ Save without forcing full Course validation
+    await course.save({ validateModifiedOnly: true });
 
     res.json({ message: "Lesson updated", course });
   } catch (err) {
     res.status(500).json({ message: "Error updating lesson", error: err.message });
   }
 };
+
 
 // Delete lesson (Teacher)
 exports.deleteLesson = async (req, res) => {
