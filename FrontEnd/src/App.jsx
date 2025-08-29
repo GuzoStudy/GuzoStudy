@@ -10,7 +10,7 @@ import TeachOnG from "./components/TeachOnG";
 import ForgotPassword from "./components/ForgotPassword";
 import ResetPassword from "./components/ResetPassword";
 import VerifyOTP from "./components/VerifyOTP";
-
+import CourseDetail from "./components/CourseDetail";
 // Wrapper
 import StudentWrapper from "./components/StudentWrapper";
 
@@ -33,6 +33,7 @@ function App() {
         <Route path="/login" element={<Login />} />
         <Route path="/forgot-password" element={<ForgotPassword />} />
         <Route path="/reset-password" element={<ResetPassword />} />
+        <Route path="/course/:id" element={<CourseDetail />} />
 
         <Route path="/teach" element={<TeachOnG />} />
         <Route path="/explore" element={<Explore />} />

@@ -1,8 +1,10 @@
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom"; 
+import { useNavigate } from "react-router-dom";
+import { Search, Users, Star } from "lucide-react";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
 import axios from "axios";
+// import CourseDetail from "./components/CourseDetail";
 
 const API_BASE = "https://guzostudy.onrender.com/api";
 
@@ -59,92 +61,93 @@ const Explore = () => {
 
   if (loading) {
     return (
-      <div className="bg-gray-100 min-h-screen flex items-center justify-center">
-        <p className="text-lg">Loading courses...</p>
+      <div className="bg-gray-50 min-h-screen flex items-center justify-center">
+        <p className="text-lg text-gray-600">Loading courses...</p>
       </div>
     );
   }
 
   return (
-    <div className="bg-gray-100 min-h-screen flex flex-col">
+    <div className="bg-gray-50 min-h-screen flex flex-col">
       <Header />
 
-      <div className="p-6 flex-1">
-        <h1 className="text-3xl font-bold mb-6 text-center">Explore Courses</h1>
+      <div className="p-6 flex-1 max-w-7xl mx-auto w-full">
+        <h1 className="text-4xl font-bold mb-8 text-center text-gray-800">Explore Courses</h1>
 
-        {/* Search */}
-        <div className="flex justify-center mb-6">
-          <input
-            type="text"
-            placeholder="Search courses..."
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full max-w-md px-4 py-2 border rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400"
-          />
+        {/* Search Bar */}
+        <div className="flex justify-center mb-8">
+          <div className="relative w-full max-w-lg">
+            <Search className="absolute left-3 top-2.5 w-5 h-5 text-gray-400" />
+            <input
+              type="text"
+              placeholder="Search courses..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="w-full pl-10 pr-4 py-2 border rounded-full shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400 bg-white"
+            />
+          </div>
         </div>
 
         {/* Course Grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
           {filteredCourses.length > 0 ? (
             filteredCourses.map((course) => (
               <div
                 key={course._id}
-                className="bg-white rounded-xl shadow-md overflow-hidden hover:shadow-xl transition-shadow duration-300"
+                className="bg-white rounded-2xl shadow-md hover:shadow-lg transition-transform transform hover:-translate-y-1 overflow-hidden flex flex-col"
               >
                 <img
                   src={course.thumbnail || "https://source.unsplash.com/400x300/?education,course"}
                   alt={course.title}
                   className="w-full h-48 object-cover"
                 />
-                <div className="p-4">
-                  <h2 className="text-xl font-semibold mb-2">{course.title}</h2>
-                  <p className="text-gray-600 text-sm mb-3 line-clamp-2">{course.description}</p>
+                <div className="p-5 flex flex-col flex-1">
+                  <h2 className="text-lg font-semibold mb-1 text-gray-800">{course.title}</h2>
+                  <p className="text-sm text-gray-500 mb-3 line-clamp-2">{course.description}</p>
 
                   <div className="flex flex-wrap gap-2 mb-3">
-                    <span className="bg-gray-100 text-gray-700 text-xs font-medium px-2 py-1 rounded">
+                    <span className="bg-blue-50 text-blue-700 text-xs font-medium px-2 py-1 rounded">
                       {course.category}
                     </span>
-                    <span className="bg-gray-100 text-gray-700 text-xs font-medium px-2 py-1 rounded">
+                    <span className="bg-gray-100 text-gray-600 text-xs font-medium px-2 py-1 rounded">
                       {course.language}
                     </span>
-                    {(course.tags || []).slice(0, 3).map((tag, i) => (
+                    {(course.tags || []).slice(0, 2).map((tag, i) => (
                       <span
                         key={i}
-                        className="bg-blue-100 text-blue-800 text-xs font-medium px-2 py-1 rounded"
+                        className="bg-green-50 text-green-700 text-xs font-medium px-2 py-1 rounded"
                       >
                         {tag}
                       </span>
                     ))}
                   </div>
 
-                  <div className="flex items-center justify-between text-gray-500 text-sm mb-3">
-                    <span>⭐ {course.averageRating?.toFixed(1) || 0}</span>
-                    <span>{course.enrollmentCount || 0} students</span>
-                  </div>
-
-                  <div className="text-lg font-semibold mb-3">
-                    {course.price === 0 ? "Free" : `$${course.price}`}
-                  </div>
-
-                  <div className="flex items-center mb-3">
-                    {course.teacher?.photo && (
-                      <img
-                        src={course.teacher.photo}
-                        alt={course.teacher?.name}
-                        className="w-8 h-8 rounded-full mr-2"
-                      />
-                    )}
-                    <span className="text-gray-700 text-sm">
-                      {course.teacher?.name || "Instructor"}
+                  <div className="flex justify-between items-center text-sm text-gray-500 mb-3">
+                    <span className="flex items-center gap-1">
+                      <Star className="w-4 h-4 text-yellow-500" />
+                      {course.averageRating?.toFixed(1) || 0}
+                    </span>
+                    <span className="flex items-center gap-1">
+                      <Users className="w-4 h-4" />
+                      {course.enrollmentCount || 0}
                     </span>
                   </div>
 
+                  <div className="text-lg font-bold text-gray-800 mb-4">
+                    {course.price === 0 ? (
+                      <span className="text-green-600">Free</span>
+                    ) : (
+                      `$${course.price}`
+                    )}
+                  </div>
+
                   <button
-                    onClick={() => handleEnroll(course._id)}
-                    className="w-full bg-blue-500 text-white py-2 rounded hover:bg-blue-600 transition-colors"
-                  >
-                    Enroll
-                  </button>
+  onClick={() => navigate(`/course/${course._id}`)}
+  className="mt-auto w-full bg-blue-600 text-white py-2 rounded-full font-medium hover:bg-blue-700 transition-colors"
+>
+  View Details
+</button>
+
                 </div>
               </div>
             ))
