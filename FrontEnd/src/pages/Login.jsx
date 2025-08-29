@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
+import axios from 'axios';
 
 function Login() {
   const [formData, setFormData] = useState({
@@ -10,6 +11,7 @@ function Login() {
     rememberMe: false
   });
   const navigate = useNavigate();
+  const [error, setError] = useState('');
 
   const handleInputChange = (e) => {
     const { name, value, type, checked } = e.target;
@@ -19,63 +21,73 @@ function Login() {
     }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // Handle form submission here
-    console.log('Form submitted:', formData);
-    // After successful login, navigate to home
-    navigate('/');
+    setError('');
+
+    try {
+      const response = await axios.post(
+        'https://guzostudy.onrender.com/api/auth/login',
+        { email: formData.email, password: formData.password }
+      );
+
+      const { user, token } = response.data;
+      localStorage.setItem('currentUser', JSON.stringify(user));
+      localStorage.setItem('token', token);
+
+      if (user.role === 'teacher') {
+        navigate('/teacher-dashboard');
+      } else {
+        navigate('/student-dashboard');
+      }
+    } catch (err) {
+      setError(err.response?.data?.message || 'Login failed');
+    }
   };
 
   return (
     <>
       <Header />
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
+      <div className="min-h-screen flex items-center justify-center py-12 px-4 bg-gray-50">
         <div className="max-w-md w-full space-y-8">
-          {/* Header */}
-          <div className="text-center">
-            <h2 className="text-3xl font-bold text-gray-900 mb-2">Login</h2>
-            <p className="text-gray-600">Welcome back!</p>
-          </div>
-          {/* Social Login Buttons */}
+          <h2 className="text-3xl font-bold text-gray-900">Login</h2>
+          <p className="text-gray-600">Welcome back!</p>
+
+          {/* Social Login */}
           <div className="space-y-3">
             <button className="w-full flex justify-center items-center px-4 py-3 border border-gray-300 rounded-lg shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 transition-colors">
-              <svg className="w-5 h-5 mr-3" viewBox="0 0 24 24">
-                {/* ...Google SVG paths... */}
-              </svg>
               <img 
-  src="https://www.svgrepo.com/show/355037/google.svg" 
-  alt="Google" 
-  className="w-5 h-5 mr-2" 
-/>
-
+                src="https://www.svgrepo.com/show/355037/google.svg" 
+                alt="Google" 
+                className="w-5 h-5 mr-2" 
+              />
               Login with Google
             </button>
           </div>
+
           {/* Login Form */}
-          <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
-            <div className="rounded-md shadow-sm -space-y-px">
-              <input
-                name="email"
-                type="email"
-                autoComplete="email"
-                required
-                value={formData.email}
-                onChange={handleInputChange}
-                className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-t-md focus:outline-none focus:ring-blue-600 focus:border-blue-600 focus:z-10 sm:text-sm"
-                placeholder="Email address"
-              />
-              <input
-                name="password"
-                type="password"
-                autoComplete="current-password"
-                required
-                value={formData.password}
-                onChange={handleInputChange}
-                className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-b-md focus:outline-none focus:ring-blue-600 focus:border-blue-600 focus:z-10 sm:text-sm"
-                placeholder="Password"
-              />
-            </div>
+          <form onSubmit={handleSubmit} className="mt-8 space-y-6">
+            <input
+              name="email"
+              type="email"
+              value={formData.email}
+              onChange={handleInputChange}
+              placeholder="Email"
+              required
+              className="w-full px-3 py-2 border rounded-md"
+            />
+            <input
+              name="password"
+              type="password"
+              value={formData.password}
+              onChange={handleInputChange}
+              placeholder="Password"
+              required
+              className="w-full px-3 py-2 border rounded-md"
+            />
+
+            {error && <p className="text-red-600">{error}</p>}
+
             <div className="flex items-center justify-between">
               <label className="flex items-center">
                 <input
@@ -83,19 +95,31 @@ function Login() {
                   type="checkbox"
                   checked={formData.rememberMe}
                   onChange={handleInputChange}
-                  className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+                  className="h-4 w-4 text-blue-600 border-gray-300 rounded"
                 />
                 <span className="ml-2 text-sm text-gray-600">Remember me</span>
               </label>
-              {/* Add forgot password link if needed */}
+
+              <span
+                className="text-sm text-blue-600 cursor-pointer"
+                onClick={() => navigate('/forgot-password')}
+              >
+                Forgot Password?
+              </span>
             </div>
-            <button
-              type="submit"
-              className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
-            >
-              Login
-            </button>
+
+            <button className="w-full py-2 bg-blue-600 text-white rounded-md">Login</button>
           </form>
+
+          <p className="text-sm text-gray-600">
+            Don’t have an account?{' '}
+            <span
+              className="text-blue-600 cursor-pointer"
+              onClick={() => navigate('/signup')}
+            >
+              Sign Up
+            </span>
+          </p>
         </div>
       </div>
       <Footer />

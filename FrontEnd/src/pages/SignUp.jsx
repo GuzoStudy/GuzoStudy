@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
+import axios from 'axios';
 
 function SignUp() {
   const [formData, setFormData] = useState({
@@ -10,6 +11,7 @@ function SignUp() {
     rememberMe: false,
     role: 'student'
   });
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
   const handleInputChange = (e) => {
@@ -20,91 +22,101 @@ function SignUp() {
     }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    if (formData.role === 'teacher') {
-      navigate('/teach'); // Redirect to TeachOnG page
-    } else {
-      // Student signup logic (e.g., save to localStorage, show success message)
-      console.log('Student signed up:', {
-        email: formData.email,
-        password: formData.password
-      });
-      // Optionally clear form or show a message
+    setLoading(true);
+    try {
+      const response = await axios.post(
+        'https://guzostudy.onrender.com/api/auth/register',
+        formData
+      );
+
+      const { user } = response.data;
+      localStorage.setItem('tempUser', JSON.stringify(user));
+
+      // Redirect to OTP verification page
+      navigate('/verify-otp', { state: { email: formData.email } });
+    } catch (error) {
+      console.error(error.response?.data || error.message);
+      alert(error.response?.data?.message || 'Signup failed');
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
     <>
       <Header />
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
-        <div className="max-w-md w-full space-y-8">
-          {/* Header */}
-          <div className="text-center">
-            <h2 className="text-3xl font-bold text-gray-900 mb-2">Sign Up</h2>
-            <p className="text-gray-600">Welcome!</p>
-          </div>
 
+      <div className="min-h-screen flex items-center justify-center py-12 px-4 bg-gray-50">
+        <div className="max-w-md w-full space-y-8">
+          <h2 className="text-3xl font-bold text-gray-900">Sign Up</h2>
+
+          {/* Google Signup */}
           <div className="space-y-3">
-            <button className="w-full flex justify-center items-center px-4 py-3 border border-gray-300 rounded-lg shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 transition-colors">
-              <svg className="w-5 h-5 mr-3" viewBox="0 0 24 24">
-                {/* ...Google SVG paths... */}
-              </svg>
+            <button
+              type="button"
+              className="w-full flex justify-center items-center px-4 py-3 border border-gray-300 rounded-lg shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 transition-colors"
+            >
               <img 
                 src="https://www.svgrepo.com/show/355037/google.svg" 
                 alt="Google" 
                 className="w-5 h-5 mr-2" 
               />
-              Signup with Google
+              Sign up with Google
             </button>
           </div>
 
-          {/* Sign Up Form */}
-          <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
-            <div className="rounded-md shadow-sm -space-y-px">
-              <input
-                name="email"
-                type="email"
-                autoComplete="email"
-                required
-                value={formData.email}
-                onChange={handleInputChange}
-                className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-t-md focus:outline-none focus:ring-blue-600 focus:border-blue-600 focus:z-10 sm:text-sm"
-                placeholder="Email address"
-              />
-              <input
-                name="password"
-                type="password"
-                autoComplete="new-password"
-                required
-                value={formData.password}
-                onChange={handleInputChange}
-                className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-b-md focus:outline-none focus:ring-blue-600 focus:border-blue-600 focus:z-10 sm:text-sm"
-                placeholder="Password"
-              />
-            </div>
-            <div className="flex items-center justify-between">
-              <label className="flex items-center">
-                <input
-                  name="rememberMe"
-                  type="checkbox"
-                  checked={formData.rememberMe}
-                  onChange={handleInputChange}
-                  className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
-                />
-                <span className="ml-2 text-sm text-gray-600">Remember me</span>
-              </label>
-              {/* Add terms and conditions link if needed */}
-            </div>
+          <form onSubmit={handleSubmit} className="mt-8 space-y-6">
+            <input
+              type="email"
+              name="email"
+              value={formData.email}
+              onChange={handleInputChange}
+              placeholder="Email"
+              required
+              className="w-full px-3 py-2 border rounded-md"
+            />
+            <input
+              type="password"
+              name="password"
+              value={formData.password}
+              onChange={handleInputChange}
+              placeholder="Password"
+              required
+              className="w-full px-3 py-2 border rounded-md"
+            />
+            <select
+              name="role"
+              value={formData.role}
+              onChange={handleInputChange}
+              className="w-full px-3 py-2 border rounded-md"
+            >
+              <option value="student">Student</option>
+              <option value="teacher">Teacher</option>
+            </select>
+
             <button
               type="submit"
-              className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+              disabled={loading}
+              className={`w-full py-2 rounded-md text-white ${loading ? 'bg-blue-400' : 'bg-blue-600 hover:bg-blue-700'}`}
             >
-              Sign Up
+              {loading ? 'Sending OTP...' : 'Sign Up'}
             </button>
           </form>
+
+          <p className="text-sm text-gray-600">
+            Already have an account?{' '}
+            <span
+              className="text-blue-600 cursor-pointer"
+              onClick={() => navigate('/login')}
+            >
+              Login
+            </span>
+          </p>
         </div>
       </div>
+
       <Footer />
     </>
   );

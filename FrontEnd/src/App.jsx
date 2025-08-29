@@ -1,6 +1,5 @@
 // App.js
 import { Routes, Route } from "react-router-dom";
-import { useState } from "react";
 
 // Main pages
 import Home from "./pages/Home";
@@ -8,6 +7,9 @@ import Login from "./pages/Login";
 import SignUp from "./pages/SignUp";
 import Explore from "./pages/Explore";
 import TeachOnG from "./components/TeachOnG";
+import ForgotPassword from "./components/ForgotPassword";
+import ResetPassword from "./components/ResetPassword";
+import VerifyOTP from "./components/VerifyOTP";
 
 // Wrapper
 import StudentWrapper from "./components/StudentWrapper";
@@ -15,20 +17,23 @@ import StudentWrapper from "./components/StudentWrapper";
 // Admin
 import AdminDashboard from "./components/AdminDashboard";
 
-function App() {
-  const [userRole, setUserRole] = useState(null);
+// Teacher
+import TeacherDashboard from "./pages/TeachersDashboard";
 
-  const handleSignUp = (role) => {
-    setUserRole(role);
-  };
+function App() {
 
   return (
     <div className="min-h-screen bg-white">
       <Routes>
         {/* Public Routes */}
         <Route path="/" element={<Home />} />
+
+        <Route path="/signup" element={<SignUp />} />
+        <Route path="/verify-otp" element={<VerifyOTP />} />
         <Route path="/login" element={<Login />} />
-        <Route path="/signup" element={<SignUp onSignUp={handleSignUp} />} />
+        <Route path="/forgot-password" element={<ForgotPassword />} />
+        <Route path="/reset-password" element={<ResetPassword />} />
+
         <Route path="/teach" element={<TeachOnG />} />
         <Route path="/explore" element={<Explore />} />
 
@@ -41,6 +46,9 @@ function App() {
 
         {/* Admin Route */}
         <Route path="/admin" element={<AdminDashboard />} />
+
+        {/* Teacher Route */}
+        <Route path="/teacher-dashboard" element={<TeacherDashboard />} />
       </Routes>
     </div>
   );

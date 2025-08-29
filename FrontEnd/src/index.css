@@ -1,5 +1,9 @@
 @import "tailwindcss";
 
+button, a, input[type="submit"], [role="button"], [onclick] {
+   cursor: pointer; 
+}
+
 ::-webkit-scrollbar {
   width: 5px;
   height: 5px;
