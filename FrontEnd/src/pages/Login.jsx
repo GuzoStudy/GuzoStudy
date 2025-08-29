@@ -35,11 +35,8 @@ function Login() {
       localStorage.setItem('currentUser', JSON.stringify(user));
       localStorage.setItem('token', token);
 
-      if (user.role === 'teacher') {
-        navigate('/teacher-dashboard');
-      } else {
-        navigate('/student-dashboard');
-      }
+      // Always redirect to student dashboard
+      navigate('/student/dashboard');
     } catch (err) {
       setError(err.response?.data?.message || 'Login failed');
     }

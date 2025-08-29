@@ -6,10 +6,10 @@ import axios from 'axios';
 
 function SignUp() {
   const [formData, setFormData] = useState({
+    name: '',
     email: '',
     password: '',
     rememberMe: false,
-    role: 'student'
   });
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
@@ -69,6 +69,15 @@ function SignUp() {
 
           <form onSubmit={handleSubmit} className="mt-8 space-y-6">
             <input
+              type="text"
+              name="name"
+              value={formData.name}
+              onChange={handleInputChange}
+              placeholder="Full Name"
+              required
+              className="w-full px-3 py-2 border rounded-md"
+            />
+            <input
               type="email"
               name="email"
               value={formData.email}
@@ -86,15 +95,6 @@ function SignUp() {
               required
               className="w-full px-3 py-2 border rounded-md"
             />
-            <select
-              name="role"
-              value={formData.role}
-              onChange={handleInputChange}
-              className="w-full px-3 py-2 border rounded-md"
-            >
-              <option value="student">Student</option>
-              <option value="teacher">Teacher</option>
-            </select>
 
             <button
               type="submit"
@@ -118,7 +118,7 @@ function SignUp() {
       </div>
 
       <Footer />
-    </>
+    </> 
   );
 }
 
