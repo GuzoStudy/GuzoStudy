@@ -44,7 +44,7 @@ function App() {
         <Route path="/student/profile" element={<StudentWrapper pageId="profile" />} />
         <Route path="/student/course/:id" element={<StudentWrapper pageId="course-detail" />} />
 
-        {/* Admin Route */}
+        {/* Admin Route*/}
         <Route path="/admin" element={<AdminDashboard />} />
 
         {/* Teacher Route */}

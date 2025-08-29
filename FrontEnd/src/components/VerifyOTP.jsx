@@ -12,11 +12,13 @@ function VerifyOTP() {
   const [otp, setOtp] = useState('');
   const [message, setMessage] = useState('');
   const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setMessage('');
     setError('');
+    setLoading(true);
 
     try {
       const response = await axios.post(
@@ -24,25 +26,20 @@ function VerifyOTP() {
         { email, otp }
       );
 
-      const { user, token } = response.data;
+      console.log("OTP verification response:", response.data);
 
-      // Save user and token in localStorage
-      localStorage.setItem('currentUser', JSON.stringify(user));
-      localStorage.setItem('token', token);
-
-      setMessage('OTP verified successfully! Redirecting...');
-
-      // Redirect based on role
+      setMessage('✅ OTP verified successfully! Redirecting to login...');
+      
+      // wait 2 seconds so the user sees the success message
       setTimeout(() => {
-        if (user.role === 'teacher') {
-          navigate('/teacher-dashboard');
-        } else {
-          navigate('/student/dashboard');
-        }
+        navigate('/login');
       }, 2000);
+
     } catch (err) {
       console.error(err.response?.data || err.message);
       setError(err.response?.data?.message || 'Invalid OTP');
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -71,9 +68,10 @@ function VerifyOTP() {
 
             <button
               type="submit"
-              className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+              disabled={loading}
+              className={`w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white ${loading ? 'bg-blue-400' : 'bg-blue-600 hover:bg-blue-700'}`}
             >
-              Verify OTP
+              {loading ? 'Verifying...' : 'Verify OTP'}
             </button>
           </form>
         </div>
