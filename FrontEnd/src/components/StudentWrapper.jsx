@@ -8,6 +8,7 @@ import CoursesStudent from "../pages/CoursesStudent";
 import MyCoursesStudent from "../pages/MyCoursesStudent";
 import CourseDetailStudent from "../pages/CourseDetailStudent";
 import ProfileStudent from "../pages/ProfileStudent";
+import Explore from "../pages/Explore";
 
 const StudentWrapper = ({ pageId }) => {
   const renderPage = () => {
@@ -15,7 +16,7 @@ const StudentWrapper = ({ pageId }) => {
       case "dashboard":
         return <StudantDashboard />;
       case "courses":
-        return <CoursesStudent />;
+        return <Explore />;
       case "my-courses":
         return <MyCoursesStudent />;
       case "profile":
