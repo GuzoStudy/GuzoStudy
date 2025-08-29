@@ -133,13 +133,7 @@ const StudentDashboard = () => {
             Keep pushing forward — your learning journey is moving strong!
           </p>
         </div>
-        <Link
-          to="/Explore"
-          className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-gradient-to-tr from-blue-600 to-indigo-600 text-white shadow hover:opacity-90 transition"
-        >
-          <BookOpen size={18} />
-          Explore Courses
-        </Link>
+      x
       </div>
 
       {/* Stats */}
