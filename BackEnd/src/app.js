@@ -1,23 +1,59 @@
-require('dotenv').config();
-const express = require('express');
-const morgan = require('morgan');
-const cors = require('cors');
-const cookieParser = require('cookie-parser');
-const listEndpoints = require('express-list-endpoints');
+// src/app.js
+import express from 'express';
+import dotenv from 'dotenv';
+import connectDB from './config/db.js';
+import userRoutes from './routes/userRoutes.js';
+import courseRoutes from './routes/courseRoutes.js';
+import enrollmentRoutes from './routes/enrollmentRoutes.js';
+import paymentRoutes from './routes/paymentRoutes.js';
+import contentRoutes from './routes/contentRoutes.js';
+import quizRoutes from './routes/quizRoutes.js';
+import certificateRoutes from './routes/certificateRoutes.js';
+import discussionRoutes from './routes/discussionRoutes.js';
+import reviewRoutes from './routes/reviewRoutes.js';
+import analyticsRoutes from './routes/analyticsRoutes.js';
+import notificationRoutes from './routes/notificationRoutes.js';
+import rateLimit from 'express-rate-limit';
+import listEndpoints from 'express-list-endpoints';
 
-const routes = require('./routes');
+dotenv.config();
+console.log('GMAIL_USERNAME:', process.env.GMAIL_USERNAME);
+console.log('GMAIL_PASSWORD:', process.env.GMAIL_PASSWORD ? '****' : 'undefined');
+
+connectDB();
 
 const app = express();
-app.use(cors());
 app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
-app.use(cookieParser());
-if (process.env.NODE_ENV !== 'production') app.use(morgan('dev'));
 
-app.use('/api', routes);
+// Rate limiter: 5 requests per minute per IP
+const limiter = rateLimit({
+  windowMs: 60 * 1000, // 1 minute
+  max: 5,
+  message: 'Rate limit exceeded. Try again in a minute.',
+});
+app.use('/api/users/register', limiter);
+app.use('/api/users/forgot-password', limiter);
 
-// Verify mounted routes
-console.log("Registered routes:", listEndpoints(app));
+app.use('/api/users', userRoutes);
+app.use('/api/courses', courseRoutes);
+app.use('/api/enrollments', enrollmentRoutes);
+app.use('/api/payments', paymentRoutes);
+app.use('/api/content', contentRoutes);
+app.use('/api/quizzes', quizRoutes);
+app.use('/api/certificates', certificateRoutes);
+app.use('/api/discussions', discussionRoutes);
+app.use('/api/reviews', reviewRoutes);
+app.use('/api/analytics', analyticsRoutes);
+app.use('/api/notifications', notificationRoutes);
 
-app.use((req, res) => res.status(404).json({ message: 'Not found' }));
-module.exports = app;
+app.use((err, req, res, next) => {
+  console.error('Server error:', err.message);
+  res.status(500).json({ message: err.message });
+});
+
+// Log all registered routes
+console.log("📌 Registered Routes:");
+console.table(listEndpoints(app));
+
+const PORT = process.env.PORT || 5000;
+app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
