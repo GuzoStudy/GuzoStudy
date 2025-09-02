@@ -1,7 +1,5 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import Header from '../components/Header';
-import Footer from '../components/Footer';
 import axios from 'axios';
 
 function Login() {
@@ -44,7 +42,6 @@ function Login() {
 
   return (
     <>
-      <Header />
       <div className="min-h-screen flex items-center justify-center py-12 px-4 bg-gray-50">
         <div className="max-w-md w-full space-y-8">
           <h2 className="text-3xl font-bold text-gray-900">Login</h2>
@@ -119,7 +116,6 @@ function Login() {
           </p>
         </div>
       </div>
-      <Footer />
     </>
   );
 }

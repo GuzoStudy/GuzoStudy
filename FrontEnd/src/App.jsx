@@ -10,6 +10,8 @@ import TeachOnG from "./components/TeachOnG";
 import ForgotPassword from "./components/ForgotPassword";
 import ResetPassword from "./components/ResetPassword";
 import VerifyOTP from "./components/VerifyOTP";
+import PrivacyPolicy from "./components/PrivacyPolicy";
+import Layout from "./components/Layout";
 
 // Wrapper
 import StudentWrapper from "./components/StudentWrapper";
@@ -24,6 +26,7 @@ function App() {
 
   return (
     <div className="min-h-screen bg-white">
+      <Layout>
       <Routes>
         {/* Public Routes */}
         <Route path="/" element={<Home />} />
@@ -37,6 +40,8 @@ function App() {
         <Route path="/teach" element={<TeachOnG />} />
         <Route path="/explore" element={<Explore />} />
 
+        <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+
         {/* Student Wrapper with IDs */}
         <Route path="/student/dashboard" element={<StudentWrapper pageId="dashboard" />} />
         <Route path="/student/courses" element={<StudentWrapper pageId="courses" />} />
@@ -48,8 +53,9 @@ function App() {
         <Route path="/admin" element={<AdminDashboard />} />
 
         {/* Teacher Route */}
-        <Route path="/teacher-dashboard" element={<TeacherDashboard />} />
+        <Route path="/teacher/dashboard" element={<TeacherDashboard />} />
       </Routes>
+      </Layout>
     </div>
   );
 }

@@ -10,8 +10,6 @@ import Profile from '../components/Profile';
 import Messages from '../components/Messages';
 import Settings from '../components/Settings';
 
-import Header from '../components/Header';
-import Footer from '../components/Footer';
 
 function TeacherDashboard() {
   const [activeTab, setActiveTab] = useState('dashboard');
@@ -42,7 +40,6 @@ function TeacherDashboard() {
   return (
 
     <>
-    <Header />
 
     <div className="flex flex-col min-h-screen bg-gray-50">
       <Dheader />
@@ -53,7 +50,6 @@ function TeacherDashboard() {
         </main>
       </div>
     </div>
-    <Footer />
     </>
   );
 }

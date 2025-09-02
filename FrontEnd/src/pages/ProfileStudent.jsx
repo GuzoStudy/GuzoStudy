@@ -11,7 +11,8 @@ import {
   Target,
   Edit2,
   Save,
-  X
+  X,
+  LogOut
 } from 'lucide-react';
 
 const ProfileStudent = () => {
@@ -102,6 +103,22 @@ const ProfileStudent = () => {
     setProfile(prev => ({ ...prev, [field]: value }));
   };
 
+  const handleSignOut = async () => {
+    try {
+      // Call your backend logout API
+      await fetch('https://guzostudy.onrender.com/api/logout', { method: 'POST', credentials: 'include' });
+
+      // Clear session or token
+      localStorage.removeItem('token');
+      sessionStorage.clear();
+
+      // Redirect to login page
+      window.location.href = '/login';
+    } catch (error) {
+      console.error("Error signing out:", error);
+    }
+  };
+
   return (
     <div className="max-w-6xl mx-auto">
       {/* Profile Header */}
@@ -122,16 +139,25 @@ const ProfileStudent = () => {
           </div>
         </div>
 
-        <div>
+        <div className="flex gap-2">
           {!isEditing ? (
-            <button 
-              className="px-4 py-2 bg-blue-600 text-white rounded-lg flex items-center gap-2 hover:bg-blue-700"
-              onClick={() => setIsEditing(true)}
-            >
-              <Edit2 size={16}/> Edit Profile
-            </button>
+            <>
+              <button 
+                className="px-4 py-2 bg-blue-600 text-white rounded-lg flex items-center gap-2 hover:bg-blue-700"
+                onClick={() => setIsEditing(true)}
+              >
+                <Edit2 size={16}/> Edit Profile
+              </button>
+
+              <button 
+                className="px-4 py-2 bg-red-600 text-white rounded-lg flex items-center gap-2 hover:bg-red-700"
+                onClick={handleSignOut}
+              >
+                <LogOut size={16}/> Sign Out
+              </button>
+            </>
           ) : (
-            <div className="flex gap-2">
+            <>
               <button 
                 className="px-4 py-2 bg-green-600 text-white rounded-lg flex items-center gap-2 hover:bg-green-700"
                 onClick={handleSave}
@@ -144,7 +170,7 @@ const ProfileStudent = () => {
               >
                 <X size={16}/> Cancel
               </button>
-            </div>
+            </>
           )}
         </div>
       </div>

@@ -1,7 +1,5 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom"; 
-import Header from "../components/Header";
-import Footer from "../components/Footer";
 
 const Explore = () => {
   const [courses, setCourses] = useState([]);
@@ -55,7 +53,6 @@ const Explore = () => {
 
   return (
     <div className="bg-gray-100 min-h-screen flex flex-col">
-      <Header />
 
       <div className="p-6 flex-1">
         <h1 className="text-3xl font-bold mb-6 text-center">Explore Courses</h1>
@@ -120,7 +117,6 @@ const Explore = () => {
         </div>
       </div>
 
-      <Footer />
     </div>
   );
 };

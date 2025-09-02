@@ -33,19 +33,7 @@ const SidebarStudent = ({ isOpen = true, onClose }) => {
           isOpen ? "translate-x-0" : "-translate-x-full"
         } transition-transform duration-300 ease-in-out`}
       >
-        {/* Header */}
-        <div className="flex items-center justify-between p-4 border-b border-gray-200">
-          <div className="flex items-center gap-2">
-            <BookOpen className="text-blue-600" size={24} />
-            <span className="text-lg font-bold text-gray-900">Guzo</span>
-          </div>
-          <button
-            className="lg:hidden p-2 rounded hover:bg-gray-100 text-gray-500"
-            onClick={onClose}
-          >
-            <X size={20} />
-          </button>
-        </div>
+        
 
         {/* Navigation */}
         <nav className="flex flex-col p-4 space-y-2">
