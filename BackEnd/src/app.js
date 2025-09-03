@@ -1,6 +1,8 @@
 // src/app.js
 import express from 'express';
 import dotenv from 'dotenv';
+import cors from 'cors';
+import fetch from "node-fetch";
 import connectDB from './config/db.js';
 import userRoutes from './routes/userRoutes.js';
 import courseRoutes from './routes/courseRoutes.js';
@@ -15,6 +17,8 @@ import analyticsRoutes from './routes/analyticsRoutes.js';
 import notificationRoutes from './routes/notificationRoutes.js';
 import rateLimit from 'express-rate-limit';
 import listEndpoints from 'express-list-endpoints';
+import chatRoutes from "./routes/chatRoutes.js";
+
 
 dotenv.config();
 console.log('GMAIL_USERNAME:', process.env.GMAIL_USERNAME);
@@ -31,6 +35,11 @@ const limiter = rateLimit({
   max: 5,
   message: 'Rate limit exceeded. Try again in a minute.',
 });
+app.use(cors({
+  origin: "http://localhost:5173",
+  methods: ["GET","POST","PUT","DELETE","OPTIONS"],
+  credentials: true
+}));
 app.use('/api/users/register', limiter);
 app.use('/api/users/forgot-password', limiter);
 
@@ -45,6 +54,7 @@ app.use('/api/discussions', discussionRoutes);
 app.use('/api/reviews', reviewRoutes);
 app.use('/api/analytics', analyticsRoutes);
 app.use('/api/notifications', notificationRoutes);
+app.use("/api", chatRoutes);
 
 app.use((err, req, res, next) => {
   console.error('Server error:', err.message);
