@@ -27,7 +27,7 @@ function SignUp() {
     setLoading(true);
     try {
       const response = await axios.post(
-        'https://guzostudy.onrender.com/api/auth/register',
+        'https://guzostudy.onrender.com/api/users/register',
         formData
       );
 
