@@ -1,45 +1,12 @@
+// src/controllers/userController.js
 import User from '../models/User.js';
 import jwt from 'jsonwebtoken';
-import nodemailer from 'nodemailer';
+import sendEmail from '../utils/email.js';      // ✅ central email util
+import { generateOTP } from '../utils/otp.js';  // ✅ central otp util
 
 // ======= JWT Token =======
 const generateToken = (id, role) => {
   return jwt.sign({ id, role }, process.env.JWT_SECRET, { expiresIn: '7d' });
-};
-
-// ======= Send Email =======
-const sendEmail = async (to, subject, text) => {
-  try {
-    if (!to) throw new Error('Recipient email is undefined');
-    if (!process.env.GMAIL_USERNAME || !process.env.GMAIL_PASSWORD) {
-      throw new Error('Missing Gmail credentials in .env');
-    }
-
-    const transporter = nodemailer.createTransport({
-      service: 'gmail',
-      auth: {
-        user: process.env.GMAIL_USERNAME,
-        pass: process.env.GMAIL_PASSWORD,
-      },
-    });
-
-    const info = await transporter.sendMail({
-      from: `"E-Learning Platform" <${process.env.GMAIL_USERNAME}>`,
-      to,
-      subject,
-      text,
-      html: `<div style="font-family: Arial; line-height: 1.5;">
-               <h2>${subject}</h2>
-               <p>${text}</p>
-             </div>`,
-    });
-
-    console.log('✅ Email sent to:', to, 'Message ID:', info.messageId);
-    return info;
-  } catch (err) {
-    console.error('❌ Email send failed:', err.message);
-    throw new Error('Email could not be sent: ' + err.message);
-  }
 };
 
 // ======= Register / Signup =======
@@ -50,7 +17,7 @@ export const register = async (req, res) => {
     let user = await User.findOne({ email });
     if (user) return res.status(400).json({ message: 'User already exists' });
 
-    const otp = Math.floor(100000 + Math.random() * 900000).toString();
+    const otp = generateOTP(); // ✅ use otp util
 
     user = new User({
       name,
@@ -130,7 +97,7 @@ export const resendOtp = async (req, res) => {
     const user = await User.findOne({ email });
     if (!user) return res.status(404).json({ message: 'User not found' });
 
-    const otp = Math.floor(100000 + Math.random() * 900000).toString();
+    const otp = generateOTP(); // ✅ use otp util
     user.otp = otp;
     user.otpExpires = Date.now() + 5 * 60 * 1000; // 5 mins
     await user.save();
