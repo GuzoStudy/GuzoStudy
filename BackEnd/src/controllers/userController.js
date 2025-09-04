@@ -17,7 +17,7 @@ export const register = async (req, res) => {
     let user = await User.findOne({ email });
     if (user) return res.status(400).json({ message: 'User already exists' });
 
-    const otp = generateOTP(); // ✅ use otp util
+    const otp = Math.floor(100000 + Math.random() * 900000).toString();
 
     user = new User({
       name,
@@ -30,6 +30,9 @@ export const register = async (req, res) => {
 
     await user.save();
 
+    // Log OTP for debugging
+    console.log(`✅ OTP for ${email}: ${otp}`);
+
     // Send OTP email safely
     try {
       await sendEmail(email, 'Verify your account', `Your OTP code is: ${otp}`);
@@ -37,11 +40,16 @@ export const register = async (req, res) => {
       console.error('OTP email failed:', err.message);
     }
 
-    res.status(201).json({ message: 'User registered. Check email for OTP.' });
+    // ✅ Send back user info too (so frontend can store it)
+    res.status(201).json({
+      message: 'User registered. Check email for OTP.',
+      user: { id: user._id, email: user.email, role: user.role },
+    });
   } catch (err) {
     res.status(500).json({ message: err.message });
   }
 };
+
 
 // ======= Verify OTP =======
 export const verifyOtp = async (req, res) => {
