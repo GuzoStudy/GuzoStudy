@@ -2,30 +2,47 @@ import User from '../models/User.js';
 import jwt from 'jsonwebtoken';
 import nodemailer from 'nodemailer';
 
-// Generate JWT
+// ======= JWT Token =======
 const generateToken = (id, role) => {
   return jwt.sign({ id, role }, process.env.JWT_SECRET, { expiresIn: '7d' });
 };
 
-// Send email function
+// ======= Send Email =======
 const sendEmail = async (to, subject, text) => {
-  const transporter = nodemailer.createTransport({
-    service: 'gmail',
-    auth: {
-      user: process.env.GMAIL_USERNAME,
-      pass: process.env.GMAIL_PASSWORD,
-    },
-  });
+  try {
+    if (!to) throw new Error('Recipient email is undefined');
+    if (!process.env.GMAIL_USERNAME || !process.env.GMAIL_PASSWORD) {
+      throw new Error('Missing Gmail credentials in .env');
+    }
 
-  await transporter.sendMail({
-    from: process.env.GMAIL_USERNAME,
-    to,
-    subject,
-    text,
-  });
+    const transporter = nodemailer.createTransport({
+      service: 'gmail',
+      auth: {
+        user: process.env.GMAIL_USERNAME,
+        pass: process.env.GMAIL_PASSWORD,
+      },
+    });
+
+    const info = await transporter.sendMail({
+      from: `"E-Learning Platform" <${process.env.GMAIL_USERNAME}>`,
+      to,
+      subject,
+      text,
+      html: `<div style="font-family: Arial; line-height: 1.5;">
+               <h2>${subject}</h2>
+               <p>${text}</p>
+             </div>`,
+    });
+
+    console.log('✅ Email sent to:', to, 'Message ID:', info.messageId);
+    return info;
+  } catch (err) {
+    console.error('❌ Email send failed:', err.message);
+    throw new Error('Email could not be sent: ' + err.message);
+  }
 };
 
-// Register user
+// ======= Register / Signup =======
 export const register = async (req, res) => {
   try {
     const { name, email, password, role } = req.body;
@@ -46,15 +63,20 @@ export const register = async (req, res) => {
 
     await user.save();
 
-    await sendEmail(email, 'Verify your account', `Your OTP code is: ${otp}`);
+    // Send OTP email safely
+    try {
+      await sendEmail(email, 'Verify your account', `Your OTP code is: ${otp}`);
+    } catch (err) {
+      console.error('OTP email failed:', err.message);
+    }
 
-    res.json({ message: 'User registered. Check email for OTP.' });
+    res.status(201).json({ message: 'User registered. Check email for OTP.' });
   } catch (err) {
     res.status(500).json({ message: err.message });
   }
 };
 
-// Verify OTP
+// ======= Verify OTP =======
 export const verifyOtp = async (req, res) => {
   try {
     const { email, otp } = req.body;
@@ -77,7 +99,7 @@ export const verifyOtp = async (req, res) => {
   }
 };
 
-// Login
+// ======= Login =======
 export const login = async (req, res) => {
   try {
     const { email, password } = req.body;
@@ -88,18 +110,19 @@ export const login = async (req, res) => {
     const isMatch = await user.comparePassword(password);
     if (!isMatch) return res.status(400).json({ message: 'Invalid credentials' });
 
-    if (!user.isVerified) {
-      return res.status(400).json({ message: 'Please verify your email first' });
-    }
+    if (!user.isVerified) return res.status(400).json({ message: 'Please verify your email first' });
 
     const token = generateToken(user._id, user.role);
-    res.json({ token, user: { id: user._id, name: user.name, email: user.email, role: user.role } });
+    res.json({
+      token,
+      user: { id: user._id, name: user.name, email: user.email, role: user.role },
+    });
   } catch (err) {
     res.status(500).json({ message: err.message });
   }
 };
 
-// Resend OTP
+// ======= Resend OTP =======
 export const resendOtp = async (req, res) => {
   try {
     const { email } = req.body;
@@ -109,28 +132,42 @@ export const resendOtp = async (req, res) => {
 
     const otp = Math.floor(100000 + Math.random() * 900000).toString();
     user.otp = otp;
-    user.otpExpires = Date.now() + 5 * 60 * 1000;
+    user.otpExpires = Date.now() + 5 * 60 * 1000; // 5 mins
     await user.save();
 
-    await sendEmail(email, 'Resend OTP', `Your new OTP is: ${otp}`);
+    try {
+      await sendEmail(email, 'Resend OTP', `Your new OTP is: ${otp}`);
+    } catch (err) {
+      console.error('Resend OTP email failed:', err.message);
+    }
 
     res.json({ message: 'New OTP sent to email' });
   } catch (err) {
     res.status(500).json({ message: err.message });
   }
 };
-// Get user profile
+
+// ======= Get User Profile =======
 export const getProfile = async (req, res) => {
   try {
-    const user = await User.findById(req.user.id).select('-password -otp -otpExpires -resetToken -resetTokenExpiry');
+    console.log('Authorization header:', req.headers.authorization);
+
+    if (!req.headers.authorization || !req.headers.authorization.startsWith('Bearer ')) {
+      return res.status(401).json({ message: 'No token found' });
+    }
+
+    const user = await User.findById(req.user.id).select(
+      '-password -otp -otpExpires -resetToken -resetTokenExpiry'
+    );
     if (!user) return res.status(404).json({ message: 'User not found' });
+
     res.json(user);
   } catch (err) {
     res.status(500).json({ message: err.message });
   }
 };
 
-// Update user profile
+// ======= Update User Profile =======
 export const updateProfile = async (req, res) => {
   try {
     const { name, bio, profilePicture } = req.body;
