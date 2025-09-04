@@ -14,11 +14,13 @@
     "express-list-endpoints": "^7.1.1",
     "express-rate-limit": "^8.0.1",
     "jsonwebtoken": "^8.5.1",
+    "limit": "^0.0.1",
     "mongodb": "^6.19.0",
     "mongoose": "^6.13.8",
     "multer": "^1.4.3",
     "node-fetch": "^3.3.2",
     "nodemailer": "^6.6.3",
+    "rate": "^0.1.1",
     "uuid": "^8.3.2"
   }
 }
