@@ -12,6 +12,7 @@ import Settings from '../components/Settings';
 
 import Header from '../components/Header';
 import Footer from '../components/Footer';
+import { Link } from "react-router-dom";
 
 function TeacherDashboard() {
   const [activeTab, setActiveTab] = useState('dashboard');

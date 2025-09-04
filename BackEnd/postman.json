@@ -1,0 +1,1018 @@
+{
+  "info": {
+    "name": "E-Learning Backend - All Features",
+    "_postman_id": "elearning-all-features",
+    "description": "Comprehensive Postman collection for testing all features of the e-learning backend. Use variables for JWTs, IDs, etc. Set up environment variables like {{baseUrl}}, {{studentJwt}}, {{instructorJwt}}, {{adminJwt}}, {{courseId}}, {{sectionId}}, {{lessonId}}, {{quizId}}, {{discussionId}}, {{certificateId}}, {{txRef}}, etc.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Feature 1: User Management",
+      "item": [
+        {
+          "name": "Register Student",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\"email\":\"test@student.com\",\"password\":\"pass123\",\"name\":\"Test Student\",\"role\":\"student\"}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/users/register",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "users", "register"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Login Student",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\"email\":\"test@student.com\",\"password\":\"pass123\"}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/users/login",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "users", "login"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Verify Email",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/users/verify/{{token}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "users", "verify", "{{token}}"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Forgot Password",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\"email\":\"test@student.com\"}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/users/forgot",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "users", "forgot"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Reset Password",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\"password\":\"newpass123\"}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/users/reset/{{token}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "users", "reset", "{{token}}"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Profile",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{studentJwt}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/users/profile",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "users", "profile"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update Profile",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{studentJwt}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\"name\":\"Updated Name\"}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/users/profile",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "users", "profile"]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Feature 2: Course Management",
+      "item": [
+        {
+          "name": "Create Course",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{instructorJwt}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\"title\":\"Node.js Masterclass\",\"description\":\"Learn Node.js\",\"category\":\"Programming\",\"tags\":[\"Node.js\",\"JavaScript\"],\"price\":99.99,\"discount\":10,\"prerequisites\":[],\"learningPaths\":[\"Intermediate\"]}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/courses",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "courses"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update Course",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{instructorJwt}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\"title\":\"Node.js Advanced\"}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/courses/{{courseId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "courses", "{{courseId}}"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Create Section",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{instructorJwt}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\"title\":\"Introduction\",\"order\":1}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/courses/{{courseId}}/sections",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "courses", "{{courseId}}", "sections"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Create Lesson",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{instructorJwt}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\"title\":\"Lesson 1\",\"contentType\":\"text\",\"textContent\":\"Introduction to Node.js\",\"duration\":10,\"order\":1}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/courses/{{sectionId}}/lessons",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "courses", "{{sectionId}}", "lessons"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Course",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/courses/{{courseId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "courses", "{{courseId}}"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Course",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{instructorJwt}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/courses/{{courseId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "courses", "{{courseId}}"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Search Courses",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/courses?category=Programming&tags=Node.js&search=Node",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "courses"],
+              "query": [
+                {
+                  "key": "category",
+                  "value": "Programming"
+                },
+                {
+                  "key": "tags",
+                  "value": "Node.js"
+                },
+                {
+                  "key": "search",
+                  "value": "Node"
+                }
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Feature 3: Content Delivery",
+      "item": [
+        {
+          "name": "Stream Lesson",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{studentJwt}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/content/lessons/{{lessonId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "content", "lessons", "{{lessonId}}"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Mark Lesson Completed",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{studentJwt}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/content/lessons/{{lessonId}}/complete",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "content", "lessons", "{{lessonId}}", "complete"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Progress",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{studentJwt}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/content/progress/{{courseId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "content", "progress", "{{courseId}}"]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Feature 4: Payment & Monetization",
+      "item": [
+        {
+          "name": "Create Cart",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{studentJwt}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\"courseId\":\"{{courseId}}\"}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/payments/cart",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "payments", "cart"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Checkout",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{studentJwt}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\"courseId\":\"{{courseId}}\",\"coupon\":\"DISC20\"}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/payments/checkout",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "payments", "checkout"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Verify Payment",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{studentJwt}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\"tx_ref\":\"{{txRef}}\"}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/payments/verify",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "payments", "verify"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Revenue",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminJwt}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/payments/revenue",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "payments", "revenue"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Subscribe",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{studentJwt}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\"plan\":\"monthly\"}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/payments/subscribe",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "payments", "subscribe"]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Feature 5: Analytics & Reporting",
+      "item": [
+        {
+          "name": "Get Student Progress",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{studentJwt}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/analytics/student/{{courseId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "analytics", "student", "{{courseId}}"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Course Completion Metrics",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{instructorJwt}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/analytics/course/{{courseId}}/completion",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "analytics", "course", "{{courseId}}", "completion"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Engagement Analytics",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{instructorJwt}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/analytics/course/{{courseId}}/engagement",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "analytics", "course", "{{courseId}}", "engagement"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Revenue Reports",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminJwt}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/analytics/revenue",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "analytics", "revenue"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Instructor Performance",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{instructorJwt}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/analytics/instructor/performance",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "analytics", "instructor", "performance"]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Feature 6: Community Features",
+      "item": [
+        {
+          "name": "Create Discussion",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{studentJwt}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\"title\":\"Discussion Title\"}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/discussions/{{courseId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "discussions", "{{courseId}}"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Post Reply",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{studentJwt}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\"content\":\"Reply Content\"}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/discussions/{{discussionId}}/reply",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "discussions", "{{discussionId}}", "reply"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Discussions",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{studentJwt}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/discussions/{{courseId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "discussions", "{{courseId}}"]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Feature 7: Assessment System",
+      "item": [
+        {
+          "name": "Create Quiz",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{instructorJwt}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\"title\":\"Quiz Title\",\"questions\":[{\"questionText\":\"Question 1\",\"options\":[\"Option 1\",\"Option 2\",\"Option 3\"],\"correctAnswer\":1,\"points\":1}],\"duration\":30,\"order\":1}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/quizzes/{{sectionId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "quizzes", "{{sectionId}}"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Submit Quiz",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{studentJwt}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\"answers\":[{\"questionIndex\":0,\"selectedOption\":1}]}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/quizzes/{{quizId}}/submit",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "quizzes", "{{quizId}}", "submit"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Quiz Results",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{studentJwt}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/quizzes/{{quizId}}/results",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "quizzes", "{{quizId}}", "results"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Issue Certificate",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{studentJwt}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/certificates/{{courseId}}/issue",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "certificates", "{{courseId}}", "issue"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Certificates",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{studentJwt}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/certificates",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "certificates"]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Feature 8: Community Features",
+      "item": [
+        {
+          "name": "Create Discussion",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{studentJwt}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\"title\":\"Discussion Title\"}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/discussions/{{courseId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "discussions", "{{courseId}}"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Post Reply",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{studentJwt}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\"content\":\"Reply Content\"}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/discussions/{{discussionId}}/reply",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "discussions", "{{discussionId}}", "reply"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Discussions",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{studentJwt}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/discussions/{{courseId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "discussions", "{{courseId}}"]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Feature 9: Course Reviews and Ratings",
+      "item": [
+        {
+          "name": "Submit Review",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{studentJwt}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\"rating\":5,\"comment\":\"Great course!\"}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/reviews/{{courseId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "reviews", "{{courseId}}"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Course Reviews",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/reviews/{{courseId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "reviews", "{{courseId}}"]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Feature 10: Analytics Dashboard",
+      "item": [
+        {
+          "name": "Get Course Analytics",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{instructorJwt}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/analytics/course/{{courseId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "analytics", "course", "{{courseId}}"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Instructor Analytics",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{instructorJwt}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/analytics/instructor/performance",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "analytics", "instructor", "performance"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Student Progress",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{studentJwt}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/analytics/student/{{courseId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "analytics", "student", "{{courseId}}"]
+            }
+          },
+          "response": []
+        }
+      ]
+    }
+  ],
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:5000"
+    },
+    {
+      "key": "studentJwt",
+      "value": "<your_student_jwt_here>"
+    },
+    {
+      "key": "instructorJwt",
+      "value": "<your_instructor_jwt_here>"
+    },
+    {
+      "key": "adminJwt",
+      "value": "<your_admin_jwt_here>"
+    },
+    {
+      "key": "courseId",
+      "value": "<your_course_id_here>"
+    },
+    {
+      "key": "sectionId",
+      "value": "<your_section_id_here>"
+    },
+    {
+      "key": "lessonId",
+      "value": "<your_lesson_id_here>"
+    },
+    {
+      "key": "quizId",
+      "value": "<your_quiz_id_here>"
+    },
+    {
+      "key": "discussionId",
+      "value": "<your_discussion_id_here>"
+    },
+    {
+      "key": "txRef",
+      "value": "<your_tx_ref_here>"
+    },
+    {
+      "key": "token",
+      "value": "<your_token_here>"
+    }
+  ]
+}
