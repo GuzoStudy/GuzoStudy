@@ -37,9 +37,15 @@ const Dheader = () => {
           </div>
 
           {/* Quick Actions */}
-          <button className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors">
-            Start Live Class
-          </button>
+          <a
+              href="https://vc-frontend2.vercel.app"       // external URL
+              target="_blank"                  // opens in a new tab
+              rel="noopener noreferrer"        // security best practice
+          >
+              <button className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors">
+                  Start Live Class
+              </button>
+          </a>
 
           {/* Notifications */}
           <div className="relative">

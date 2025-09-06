@@ -12,6 +12,11 @@ import VerifyOTP from "./components/VerifyOTP";
 import CourseDetail from "./components/CourseDetail";
 import StudentWrapper from "./components/StudentWrapper";
 
+// Footer links pages
+import PrivacyPolicy from "./pages/PrivacyPolicy";
+import Terms from "./pages/Terms";
+import Contact from "./pages/Contact";
+
 // Dashboards
 import AdminDashboard from "./components/AdminDashboard";
 import TeacherDashboard from "./pages/TeachersDashboard";
@@ -34,7 +39,6 @@ function App() {
         <Route path="/course/:id" element={<CourseDetail />} />
         <Route path="/teach" element={<TeachOnG />} />
         <Route path="/explore" element={<Explore />} />
-        <Route path="/chatbot" element={<Chatbot />} />
 
         {/* Student Pages */}
         <Route path="/dashboard" element={<StudentWrapper pageId="dashboard" />} />
@@ -51,7 +55,14 @@ function App() {
 
         {/* StudentDashboard (separate page) */}
         <Route path="/studentDashboard" element={<StudentDashboard />} />
+
+        {/* Footer Links */}
+        <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+        <Route path="/terms" element={<Terms />} />
+        <Route path="/contact" element={<Contact />} />
+      {/* Add more routes as needed */}
       </Routes>
+      <Chatbot />
     </div>
   );
 }

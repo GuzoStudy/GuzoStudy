@@ -4,7 +4,6 @@ import { Search, Users, Star } from "lucide-react";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
 import axios from "axios";
-// import CourseDetail from "./components/CourseDetail";
 
 const API_BASE = "https://guzostudy.onrender.com/api";
 
@@ -51,8 +50,8 @@ const Explore = () => {
   };
 
   const filteredCourses = courses.filter((course) =>
-    course.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    course.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    (course.title?.toLowerCase() || "").includes(searchQuery.toLowerCase()) ||
+    (course.description?.toLowerCase() || "").includes(searchQuery.toLowerCase()) ||
     (course.tags || []).some(tag =>
       tag.toLowerCase().includes(searchQuery.toLowerCase())
     ) ||
@@ -141,13 +140,20 @@ const Explore = () => {
                     )}
                   </div>
 
-                  <button
-  onClick={() => navigate(`/course/${course._id}`)}
-  className="mt-auto w-full bg-blue-600 text-white py-2 rounded-full font-medium hover:bg-blue-700 transition-colors"
->
-  View Details
-</button>
-
+                  <div className="flex gap-2 mt-auto">
+                    <button
+                      onClick={() => navigate(`/course/${course._id}`)}
+                      className="w-1/2 bg-blue-600 text-white py-2 rounded-full font-medium hover:bg-blue-700 transition-colors"
+                    >
+                      View Details
+                    </button>
+                    <button
+                      onClick={() => handleEnroll(course._id)}
+                      className="w-1/2 bg-green-600 text-white py-2 rounded-full font-medium hover:bg-green-700 transition-colors"
+                    >
+                      Enroll
+                    </button>
+                  </div>
                 </div>
               </div>
             ))
