@@ -23,7 +23,7 @@ import TeacherDashboard from "./pages/TeachersDashboard";
 import StudentDashboard from "./pages/StudentDashboard";
 
 // ⚠️ IMPORTANT: you must import Chatbot here, otherwise React will crash
-import Chatbot from "./components/Chatbot";
+import Chatbot from "./components/ChatBot";
 
 function App() {
   return (
