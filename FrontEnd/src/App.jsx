@@ -42,6 +42,7 @@ function App() {
         <Route path="/my-courses" element={<StudentWrapper pageId="my-courses" />} />
         <Route path="/profile" element={<StudentWrapper pageId="profile" />} />
         <Route path="/:id" element={<StudentWrapper pageId="course-detail" />} />
+        
 
         {/* Teacher */}
         <Route path="/teacher-dashboard" element={<TeacherDashboard />} />
