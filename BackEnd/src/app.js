@@ -17,6 +17,7 @@ import chatRoutes from './routes/chatRoutes.js';
 import rateLimit from 'express-rate-limit';
 import listEndpoints from 'express-list-endpoints';
 import cors from 'cors';
+import chatRoutes from './routes/chatRoutes.js';
 
 dotenv.config();
 console.log('GMAIL_USERNAME:', process.env.GMAIL_USERNAME);
