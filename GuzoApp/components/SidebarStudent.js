@@ -1,4 +1,4 @@
-// SidebarStudent.js
+
 import React from "react";
 import {
   View,
@@ -18,7 +18,7 @@ const SidebarStudent = ({ isOpen = true, onClose }) => {
 
   const navItems = [
     { screen: "StudentDashboard", icon: Home, label: "Dashboard" },
-    { screen: "ExploreStudent", icon: BookOpen, label: "Explore Courses" }, // ✅ updated
+    { screen: "ExploreStudent", icon: BookOpen, label: "Explore Courses" }, 
     { screen: "MyCoursesStudent", icon: Play, label: "My Courses" },
     { screen: "ProfileStudent", icon: User, label: "Profile" },
   ];
