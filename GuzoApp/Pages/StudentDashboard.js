@@ -21,7 +21,6 @@ import {
 import { useNavigation } from "@react-navigation/native";
 import api from "../utils/api";
 
-// ✅ Import your SidebarDashboard
 import SidebarDashboard from "../components/SidebarStudent";
 
 const StudentDashboard = () => {
@@ -30,7 +29,6 @@ const StudentDashboard = () => {
   const [enrollments, setEnrollments] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  // ✅ Fetch Enrollments
   useEffect(() => {
     let mounted = true;
     (async () => {
@@ -47,7 +45,6 @@ const StudentDashboard = () => {
     return () => (mounted = false);
   }, []);
 
-  // ✅ Recent Courses
   const recentCourses = useMemo(() => {
     const mapped = (enrollments || []).map((en) => {
       const c = en.course || {};
@@ -83,7 +80,6 @@ const StudentDashboard = () => {
       .slice(0, 3);
   }, [enrollments]);
 
-  // ✅ Stats
   const stats = useMemo(() => {
     const active = enrollments.filter((en) => {
       const total = Array.isArray(en.course?.lessons)
@@ -132,7 +128,6 @@ const StudentDashboard = () => {
     ];
   }, [enrollments]);
 
-  // ✅ Deadlines
   const upcomingDeadlines = [
     {
       id: 1,
@@ -145,7 +140,7 @@ const StudentDashboard = () => {
 
   return (
     <SafeAreaView style={{ flex: 1 }}>
-      {/* ✅ Menu Bar */}
+      {/* Menu Bar */}
       <View style={styles.menuBar}>
         <TouchableOpacity
           onPress={() => setIsSidebarOpen(!isSidebarOpen)}
@@ -155,7 +150,7 @@ const StudentDashboard = () => {
         <Text style={styles.menuTitle}>Student Dashboard</Text>
       </View>
 
-      {/* ✅ Sidebar */}
+      {/* Sidebar */}
       {isSidebarOpen && (
         <SidebarDashboard
           style={styles.sidebar}
@@ -163,7 +158,7 @@ const StudentDashboard = () => {
         />
       )}
 
-      {/* ✅ Main Content */}
+      {/* Main Content */}
       <ScrollView style={styles.container}>
         {/* Header */}
         <View style={styles.header}>
@@ -196,7 +191,6 @@ const StudentDashboard = () => {
             <TouchableOpacity
               style={styles.row}
               onPress={() => navigation.navigate("MyCoursesStudent")}>
-              {/* 🔥 Changed from "Explore" to "MyCoursesStudent" */}
               <Text style={styles.link}>View All</Text>
               <ArrowRight size={16} color="#2563eb" />
             </TouchableOpacity>
@@ -278,7 +272,6 @@ const StudentDashboard = () => {
   );
 };
 
-// ✅ Styles (same as before with menubar added)
 const styles = StyleSheet.create({
   menuBar: {
     flexDirection: "row",

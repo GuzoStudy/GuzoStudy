@@ -3,7 +3,7 @@ import {
   View,
   Text,
   TextInput,
-  TouchableOpacity, 
+  TouchableOpacity,
   Alert,
   StyleSheet,
 } from "react-native";
@@ -21,7 +21,7 @@ export default function OtpVerificationPage({ route, navigation }) {
     setLoading(true);
     try {
       const response = await fetch(
-        "https://guzostudy.onrender.com/api/auth/verify-otp",
+        "https://guzostudy.onrender.com/api/users/verify-otp",
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },

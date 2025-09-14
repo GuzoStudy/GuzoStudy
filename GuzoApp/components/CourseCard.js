@@ -1,7 +1,22 @@
-import React from 'react';
-import { View, Text, Image, StyleSheet, TouchableOpacity, ScrollView } from 'react-native';
+import React from "react";
+import {
+  View,
+  Text,
+  Image,
+  StyleSheet,
+  TouchableOpacity,
+  ScrollView,
+} from "react-native";
 
-const CourseCard = ({ title, image, description, tags, rating, teacher, studentsEnrolled }) => {
+const CourseCard = ({
+  title,
+  image,
+  description,
+  tags,
+  rating,
+  teacher,
+  studentsEnrolled,
+}) => {
   return (
     <View style={styles.card}>
       {/* Course Image */}
@@ -27,7 +42,9 @@ const CourseCard = ({ title, image, description, tags, rating, teacher, students
         <View style={styles.ratingRow}>
           <View style={styles.stars}>
             {Array.from({ length: rating }, (_, i) => (
-              <Text key={i} style={styles.star}>★</Text>
+              <Text key={i} style={styles.star}>
+                ★
+              </Text>
             ))}
           </View>
           <Text style={styles.enrolledText}>{studentsEnrolled} enrolled</Text>
@@ -52,41 +69,41 @@ export default CourseCard;
 
 const styles = StyleSheet.create({
   card: {
-    backgroundColor: '#fff',
+    backgroundColor: "#fff",
     borderRadius: 12,
-    shadowColor: '#000',
+    shadowColor: "#000",
     shadowOpacity: 0.1,
     shadowRadius: 8,
     elevation: 4,
     marginBottom: 16,
-    overflow: 'hidden',
+    overflow: "hidden",
   },
   image: {
-    height: 192, // 48 * 4 = h-48
-    width: '100%',
-    resizeMode: 'cover',
+    height: 192,
+    width: "100%",
+    resizeMode: "cover",
   },
   content: {
     padding: 16,
   },
   title: {
     fontSize: 20,
-    fontWeight: '600',
+    fontWeight: "600",
     marginBottom: 6,
   },
   description: {
     fontSize: 14,
-    color: '#64748b',
+    color: "#64748b",
     marginBottom: 8,
   },
   tagsContainer: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
+    flexDirection: "row",
+    flexWrap: "wrap",
     gap: 6,
     marginBottom: 12,
   },
   tag: {
-    backgroundColor: '#dbeafe',
+    backgroundColor: "#dbeafe",
     paddingHorizontal: 8,
     paddingVertical: 4,
     borderRadius: 16,
@@ -95,29 +112,29 @@ const styles = StyleSheet.create({
   },
   tagText: {
     fontSize: 12,
-    color: '#2563eb',
+    color: "#2563eb",
   },
   ratingRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
     marginBottom: 12,
   },
   stars: {
-    flexDirection: 'row',
+    flexDirection: "row",
   },
   star: {
-    color: '#facc15',
+    color: "#facc15",
     fontSize: 16,
     marginRight: 2,
   },
   enrolledText: {
     fontSize: 12,
-    color: '#6b7280',
+    color: "#6b7280",
   },
   teacherRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     marginBottom: 12,
   },
   teacherImage: {
@@ -128,17 +145,17 @@ const styles = StyleSheet.create({
   },
   teacherName: {
     fontSize: 14,
-    color: '#334155',
+    color: "#334155",
   },
   button: {
-    backgroundColor: '#2563eb',
+    backgroundColor: "#2563eb",
     paddingVertical: 10,
     borderRadius: 8,
-    alignItems: 'center',
+    alignItems: "center",
   },
   buttonText: {
-    color: '#fff',
-    fontWeight: '600',
+    color: "#fff",
+    fontWeight: "600",
     fontSize: 16,
   },
 });

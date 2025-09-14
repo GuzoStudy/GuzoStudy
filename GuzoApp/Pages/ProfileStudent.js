@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   View,
   Text,
@@ -7,24 +7,28 @@ import {
   TouchableOpacity,
   StyleSheet,
   FlatList,
+  Alert,
 } from "react-native";
 import { Feather } from "@expo/vector-icons";
+import axios from "axios";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const ProfileStudent = () => {
   const [isEditing, setIsEditing] = useState(false);
   const [activeTab, setActiveTab] = useState("overview");
+  const [loading, setLoading] = useState(true);
 
   const [profile, setProfile] = useState({
-    firstName: "Nahom",
-    lastName: "Tesfaye",
-    email: "nahom.tesfaye@guzo.et",
-    phone: "+251 911 234 567",
-    location: "Addis Ababa, Ethiopia",
-    bio: "Curious learner exploring programming and design. I believe education is the key to building the future of Ethiopia.",
-    joinDate: "2024-03-10",
-    timezone: "East Africa Time (EAT)",
-    learningGoal: "Finish 10 Guzo courses in 2025",
-    weeklyGoal: "12 hours per week",
+    firstName: "",
+    lastName: "",
+    email: "",
+    phone: "",
+    location: "",
+    bio: "",
+    joinDate: "",
+    timezone: "",
+    learningGoal: "",
+    weeklyGoal: "",
   });
 
   const achievements = [
@@ -82,8 +86,64 @@ const ProfileStudent = () => {
     },
   ];
 
-  const handleSave = () => setIsEditing(false);
+  useEffect(() => {
+    const fetchProfile = async () => {
+      try {
+        const token = await AsyncStorage.getItem("token");
+        console.log("Fetched token:", token);
+
+        if (!token) {
+          console.warn("No token found");
+          Alert.alert("Session Expired", "Please log in again.");
+          return;
+        }
+
+        const response = await axios.get(
+          "https://guzostudy.onrender.com/api/users/profile",
+          {
+            headers: { Authorization: `Bearer ${token}` },
+          }
+        );
+
+        setProfile(response.data);
+      } catch (err) {
+        console.error("Failed to fetch profile:", err.message);
+        Alert.alert("Error", "Could not load profile data.");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchProfile();
+  }, []);
+
+  const handleSave = async () => {
+    try {
+      const token = await AsyncStorage.getItem("token");
+      if (!token) {
+        console.warn("No token found during save");
+        Alert.alert("Session Expired", "Please log in again.");
+        return;
+      }
+
+      await axios.put(
+        "https://guzostudy.onrender.com/api/users/profile",
+        profile,
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
+
+      Alert.alert("Success", "Profile updated!");
+      setIsEditing(false);
+    } catch (err) {
+      console.error("Failed to update profile:", err.message);
+      Alert.alert("Error", "Could not update profile.");
+    }
+  };
+
   const handleCancel = () => setIsEditing(false);
+
   const handleInputChange = (field, value) => {
     setProfile((prev) => ({ ...prev, [field]: value }));
   };
@@ -133,7 +193,6 @@ const ProfileStudent = () => {
 
   return (
     <ScrollView style={styles.container}>
-      {/* Profile Header */}
       <View style={styles.header}>
         <View style={styles.avatar}>
           <Feather name="user" size={40} color="#fff" />
@@ -164,7 +223,8 @@ const ProfileStudent = () => {
           {!isEditing ? (
             <TouchableOpacity
               style={styles.editBtn}
-              onPress={() => setIsEditing(true)}>
+              onPress={() => setIsEditing(true)}
+            >
               <Feather name="edit-2" size={16} color="#fff" />
               <Text style={styles.btnText}> Edit</Text>
             </TouchableOpacity>
@@ -172,13 +232,15 @@ const ProfileStudent = () => {
             <View style={{ flexDirection: "row" }}>
               <TouchableOpacity
                 style={[styles.editBtn, { backgroundColor: "#059669" }]}
-                onPress={handleSave}>
+                onPress={handleSave}
+              >
                 <Feather name="save" size={16} color="#fff" />
                 <Text style={styles.btnText}> Save</Text>
               </TouchableOpacity>
               <TouchableOpacity
                 style={[styles.editBtn, { backgroundColor: "#f1f5f9" }]}
-                onPress={handleCancel}>
+                onPress={handleCancel}
+              >
                 <Feather name="x" size={16} color="#374151" />
                 <Text style={[styles.btnText, { color: "#374151" }]}>
                   Cancel
@@ -189,7 +251,6 @@ const ProfileStudent = () => {
         </View>
       </View>
 
-      {/* Stats */}
       <Text style={styles.sectionTitle}>Your Learning on Guzo</Text>
       <View style={styles.statsGrid}>
         {learningStats.map((s, i) => (
@@ -201,18 +262,19 @@ const ProfileStudent = () => {
         ))}
       </View>
 
-      {/* Tabs */}
       <View style={styles.tabRow}>
         {["overview", "achievements", "activity"].map((tab) => (
           <TouchableOpacity
             key={tab}
             onPress={() => setActiveTab(tab)}
-            style={[styles.tabBtn, activeTab === tab && styles.tabActive]}>
+            style={[styles.tabBtn, activeTab === tab && styles.tabActive]}
+          >
             <Text
               style={[
                 styles.tabText,
                 activeTab === tab && styles.tabTextActive,
-              ]}>
+              ]}
+            >
               {tab === "overview"
                 ? "Overview"
                 : tab === "achievements"
@@ -223,7 +285,6 @@ const ProfileStudent = () => {
         ))}
       </View>
 
-      {/* Content */}
       <View style={styles.content}>
         {activeTab === "overview" && renderOverview()}
 

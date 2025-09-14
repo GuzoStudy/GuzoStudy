@@ -12,6 +12,7 @@ import { useNavigation } from "@react-navigation/native";
 import ForgetPassword from "./ForgetPassword";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
+import AsyncStorage from "@react-native-async-storage/async-storage"; 
 
 function LoginPage() {
   const [showForgetPassword, setShowForgetPassword] = useState(false);
@@ -40,7 +41,7 @@ function LoginForm({ onForgotPassword }) {
 
     try {
       const response = await fetch(
-        "https://guzostudy.onrender.com/api/auth/login",
+        "https://guzostudy.onrender.com/api/users/login",
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -53,6 +54,8 @@ function LoginForm({ onForgotPassword }) {
       if (!response.ok) {
         throw new Error(data.message || "Login failed");
       }
+
+      await AsyncStorage.setItem("token", data.token);
 
       Alert.alert("Success", "Logged in successfully!");
       navigation.navigate("StudentDashboard");
@@ -127,7 +130,6 @@ function LoginForm({ onForgotPassword }) {
         </View>
       </ScrollView>
 
-      {/* Footer sticks at the bottom */}
       <Footer />
     </View>
   );

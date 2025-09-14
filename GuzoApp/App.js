@@ -13,14 +13,16 @@ import StudentDashboard from "./Pages/StudentDashboard";
 import ExploreStudent from "./Pages/ExploreStudent";
 import MyCoursesStudent from "./Pages/MyCoursesStudent";
 import ProfileStudent from "./Pages/ProfileStudent";
-import CourseDetailStudent from "./Pages/CourseDetailStudent"; // ✅ IMPORTED
+import CourseDetailStudent from "./Pages/CourseDetailStudent";
 
 const Stack = createNativeStackNavigator();
 
 export default function App() {
   return (
     <NavigationContainer>
-      <Stack.Navigator initialRouteName="Home" screenOptions={{ headerShown: false }}>
+      <Stack.Navigator
+        initialRouteName="Home"
+        screenOptions={{ headerShown: false }}>
         {/* Public / entry routes */}
         <Stack.Screen name="Home" component={Home} />
         <Stack.Screen name="Login" component={LoginPage} />

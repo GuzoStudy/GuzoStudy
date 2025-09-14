@@ -13,6 +13,7 @@ import discussionRoutes from './routes/discussionRoutes.js';
 import reviewRoutes from './routes/reviewRoutes.js';
 import analyticsRoutes from './routes/analyticsRoutes.js';
 import notificationRoutes from './routes/notificationRoutes.js';
+import chatRoutes from './routes/chatRoutes.js';
 import rateLimit from 'express-rate-limit';
 import listEndpoints from 'express-list-endpoints';
 import cors from 'cors';
@@ -70,7 +71,7 @@ app.use('/api/discussions', discussionRoutes);
 app.use('/api/reviews', reviewRoutes);
 app.use('/api/analytics', analyticsRoutes);
 app.use('/api/notifications', notificationRoutes);
-app.use('/api/chat', chatRoutes);
+app.use('/api', chatRoutes); // Chat routes
 
 /* ========================
    ✅ ERROR HANDLER

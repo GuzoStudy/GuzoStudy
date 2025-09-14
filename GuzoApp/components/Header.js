@@ -57,7 +57,7 @@ export default function Header({ userRole }) {
             </Text>
           </TouchableOpacity>
 
-          {/* Navigation (navbar under logo) */}
+          {/* navbar under logo */}
           <View
             style={{
               flexDirection: "row",
