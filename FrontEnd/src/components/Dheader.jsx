@@ -1,8 +1,10 @@
 import React, { useState } from 'react';
+import { Link, useNavigate } from "react-router-dom";
 
 const Dheader = () => {
   const [showNotifications, setShowNotifications] = useState(false);
   const [showProfile, setShowProfile] = useState(false);
+  const navigate = useNavigate();
 
   const notifications = [
     { id: 1, type: 'enrollment', message: 'New student enrolled in JavaScript Basics', time: '2 min ago' },
@@ -11,16 +13,32 @@ const Dheader = () => {
     { id: 4, type: 'question', message: 'Student question in React Advanced course', time: '1 hour ago' },
   ];
 
+  const handleSignOut = async () => {
+    try {
+      await fetch("https://guzostudy-1.onrender.com/api/users/logout", {
+        method: "POST",
+        credentials: "include",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+    } catch (error) {
+      console.error("Error signing out:", error);
+    } finally {
+      localStorage.removeItem("token");
+      navigate("/");
+      window.location.reload();
+    }
+  };
+
   return (
     <header className="bg-white shadow-sm border-b border-gray-200">
       <div className="flex items-center justify-between px-6 py-4">
         <div className="flex items-center">
-          <div className="flex items-center space-x-3">
-            <div className="w-8 h-8 bg-gradient-to-r from-blue-600 to-purple-600 rounded-lg flex items-center justify-center">
-              <span className="text-white font-bold text-sm">T</span>
-            </div>
-            <h1 className="text-xl font-semibold text-gray-800">Teachers Dashboard</h1>
-          </div>
+          <Link to="/" className="text-2xl font-bold flex items-center">
+            <span className="text-blue-600">Guzo</span>
+            <span className="text-gray-800">Study</span>
+          </Link>
         </div>
 
         <div className="flex items-center space-x-4">
@@ -38,13 +56,13 @@ const Dheader = () => {
 
           {/* Quick Actions */}
           <a
-              href="https://vc-frontend2.vercel.app"       // external URL
-              target="_blank"                  // opens in a new tab
-              rel="noopener noreferrer"        // security best practice
+            href="https://vc-frontend2.vercel.app"
+            target="_blank"
+            rel="noopener noreferrer"
           >
-              <button className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors">
-                  Start Live Class
-              </button>
+            <button className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors">
+              Start Live Class
+            </button>
           </a>
 
           {/* Notifications */}
@@ -101,11 +119,19 @@ const Dheader = () => {
             {showProfile && (
               <div className="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg border border-gray-200 z-50">
                 <div className="p-2">
-                  <a href="#" className="block px-3 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded">View Profile</a>
-                  <a href="#" className="block px-3 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded">Account Settings</a>
-                  <a href="#" className="block px-3 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded">Help & Support</a>
+                  <a 
+                    onClick={() => navigate('/teacherprofile')}
+                    className="block px-3 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded cursor-pointer"
+                  >
+                    Profile
+                  </a>
                   <hr className="my-1" />
-                  <a href="#" className="block px-3 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded">Sign Out</a>
+                  <a
+                    onClick={handleSignOut}
+                    className="block px-3 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded cursor-pointer"
+                  >
+                    Sign Out
+                  </a>
                 </div>
               </div>
             )}

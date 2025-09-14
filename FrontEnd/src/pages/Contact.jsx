@@ -80,16 +80,16 @@ const Contact = () => {
 
           {/* Social Links */}
           <div className="mt-8 flex justify-center space-x-6">
-            <a href="https://facebook.com/yourpage" target="_blank" rel="noopener noreferrer" className="text-gray-600 hover:text-blue-600 transition-colors">
+            <a href="https://facebook.com/GuzoStudy" target="_blank" rel="noopener noreferrer" className="text-gray-600 hover:text-blue-600 transition-colors">
               <Facebook size={24} />
             </a>
-            <a href="https://twitter.com/yourhandle" target="_blank" rel="noopener noreferrer" className="text-gray-600 hover:text-blue-400 transition-colors">
+            <a href="https://twitter.com/GuzoStudy" target="_blank" rel="noopener noreferrer" className="text-gray-600 hover:text-blue-400 transition-colors">
               <Twitter size={24} />
             </a>
-            <a href="https://instagram.com/yourhandle" target="_blank" rel="noopener noreferrer" className="text-gray-600 hover:text-pink-500 transition-colors">
+            <a href="https://instagram.com/GuzoStudy" target="_blank" rel="noopener noreferrer" className="text-gray-600 hover:text-pink-500 transition-colors">
               <Instagram size={24} />
             </a>
-            <a href="https://linkedin.com/in/yourprofile" target="_blank" rel="noopener noreferrer" className="text-gray-600 hover:text-blue-700 transition-colors">
+            <a href="https://linkedin.com/in/GuzoStudy" target="_blank" rel="noopener noreferrer" className="text-gray-600 hover:text-blue-700 transition-colors">
               <Linkedin size={24} />
             </a>
           </div>

@@ -184,8 +184,7 @@ const EarningsReport = () => {
             <label className="block text-sm font-medium text-gray-700 mb-2">Payment Method</label>
             <select className="w-full border border-gray-300 rounded-lg px-3 py-2">
               <option>Bank Transfer</option>
-              <option>PayPal</option>
-              <option>Stripe</option>
+              <option>Telebirr</option>
             </select>
           </div>
           <div>

@@ -38,8 +38,8 @@ function Login() {
       // Redirect based on role
       if (user.role === 'student') {
         navigate('/studentDashboard');
-      } else if (user.role === 'teacher') {
-        navigate('/teacher/dashboard');
+      } else if (user.role === 'instructor') {
+        navigate('/instructor/dashboard');
       } else {
         navigate('/'); // fallback
       }

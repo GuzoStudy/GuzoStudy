@@ -51,6 +51,7 @@ function SignUp() {
       setLoading(false);
     }
   };
+  
 
   return (
     <>
@@ -96,7 +97,7 @@ function SignUp() {
               className="w-full px-3 py-2 border rounded-md"
             >
               <option value="student">Student</option>
-              <option value="teacher">Teacher</option>
+              <option value="instructor">Instructor</option>
             </select>
 
             {/* Email */}

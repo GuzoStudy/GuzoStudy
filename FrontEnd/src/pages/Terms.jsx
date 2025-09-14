@@ -11,7 +11,7 @@ const Terms = () => {
       <main className="max-w-4xl mx-auto p-6 flex-1">
         <h1 className="text-3xl font-bold mb-6 text-gray-800">Terms & Conditions</h1>
 
-        <section className="space-y-4 text-gray-700 text-sm leading-relaxed">
+        <section className="space-y-4 text-gray-700 text-mb-4 leading-relaxed">
           <p>
             Welcome to GuzoStudy! By accessing or using our platform, you agree to comply with
             and be bound by these Terms and Conditions. Please read them carefully.

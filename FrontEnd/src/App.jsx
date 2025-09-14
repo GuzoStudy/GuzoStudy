@@ -11,6 +11,7 @@ import ResetPassword from "./components/ResetPassword";
 import VerifyOTP from "./components/VerifyOTP";
 import CourseDetail from "./components/CourseDetail";
 import StudentWrapper from "./components/StudentWrapper";
+import Profile from "./pages/InstructorProfile";
 
 // Footer links pages
 import PrivacyPolicy from "./pages/PrivacyPolicy";
@@ -23,7 +24,7 @@ import TeacherDashboard from "./pages/TeachersDashboard";
 import StudentDashboard from "./pages/StudentDashboard";
 
 // ⚠️ IMPORTANT: you must import Chatbot here, otherwise React will crash
-import Chatbot from "./components/Chatbot";
+import Chatbot from "./components/ChatBot";
 
 function App() {
   return (
@@ -44,17 +45,18 @@ function App() {
         <Route path="/dashboard" element={<StudentWrapper pageId="dashboard" />} />
         <Route path="/courses" element={<StudentWrapper pageId="courses" />} />
         <Route path="/my-courses" element={<StudentWrapper pageId="my-courses" />} />
-        <Route path="/profile" element={<StudentWrapper pageId="profile" />} />
+        {/*<Route path="/profile" element={<StudentWrapper pageId="profile" />} />*/}
         <Route path="/:id" element={<StudentWrapper pageId="course-detail" />} />
 
         {/* Teacher */}
-        <Route path="/teacher-dashboard" element={<TeacherDashboard />} />
+        <Route path="/instructor/dashboard" element={<TeacherDashboard />} />
+        <Route path="/instructor/profile" element={<Profile />} />
 
         {/* Admin */}
         <Route path="/admin" element={<AdminDashboard />} />
 
         {/* StudentDashboard (separate page) */}
-        <Route path="/studentDashboard" element={<StudentDashboard />} />
+        <Route path="/studentdashboard" element={<StudentDashboard />} />
 
         {/* Footer Links */}
         <Route path="/privacy-policy" element={<PrivacyPolicy />} />
