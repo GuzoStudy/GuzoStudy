@@ -1,15 +1,25 @@
 import axios from "axios";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const api = axios.create({
-  baseURL: "https://guzostudy.onrender.com/api", // <- your live API
-  withCredentials: false, // set true only if you're using httpOnly cookie auth on same domain
+  baseURL: "https://guzostudy.onrender.com/api",
+  withCredentials: false, // only true if you do same-domain cookie auth
 });
 
-// Attach token if you use JWT in Authorization header
-api.interceptors.request.use((config) => {
-  const token = localStorage.getItem("token"); // store your JWT at login
-  if (token) config.headers.Authorization = `Bearer ${token}`;
-  return config;
-});
+// Attach token from AsyncStorage
+api.interceptors.request.use(
+  async (config) => {
+    try {
+      const token = await AsyncStorage.getItem("token"); 
+      if (token) {
+        config.headers.Authorization = `Bearer ${token}`;
+      }
+    } catch (e) {
+      console.warn("Error reading token from AsyncStorage:", e);
+    }
+    return config;
+  },
+  (error) => Promise.reject(error)
+);
 
 export default api;

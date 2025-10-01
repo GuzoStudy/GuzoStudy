@@ -105,7 +105,7 @@ const StudentDashboard = () => {
             Keep pushing forward — your learning journey is moving strong!
           </p>
         </div>
-
+-
         {/* 👇 New Button */}
         <button
           onClick={() => window.open("https://vc-frontend2.vercel.app/", "_blank")}

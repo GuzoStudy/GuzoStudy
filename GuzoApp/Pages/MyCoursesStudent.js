@@ -62,7 +62,9 @@ const MyCoursesStudent = () => {
 
     (async () => {
       try {
-        const res = await api.get("/enrollments/student/my-courses");
+        const res = await api.get(
+          "https://guzostudy.onrender.com/api/enrollments"
+        );
         if (!mounted) return;
         setEnrollments(res.data || []);
       } catch (e) {
