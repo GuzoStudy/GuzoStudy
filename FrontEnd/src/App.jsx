@@ -24,6 +24,10 @@ import TeacherDashboard from "./pages/TeachersDashboard";
 //chat bot
 import Chatbot from "./components/ChatBot";
 
+//student
+import { Dashboard } from "./pages/Dashbord.jsx";
+import { AdminDashboard } from "./pages/AdminDashboard.jsx";
+
 function App() {
   return (
     <div className="min-h-screen bg-white">
@@ -39,6 +43,8 @@ function App() {
         <Route path="/explore" element={<Explore />} />
 
         {/* Student Pages */}
+        <Route path="/studentdashbord" element={<Dashboard />} />
+        <Route path="/admindashbord" element={<AdminDashboard />} />
       
 
         {/* Teacher */}
