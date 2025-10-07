@@ -20,7 +20,7 @@ function ResetPassword() {
     setMessage('');
 
     try {
-      await axios.post('https://guzostudy.onrender.com/api/auth/reset-password', {
+      await axios.post('https://guzostudy-1.onrender.com/api/users/reset-password', {
         email,
         otp,
         newPassword: password

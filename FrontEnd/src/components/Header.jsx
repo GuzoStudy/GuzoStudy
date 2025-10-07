@@ -13,7 +13,6 @@ function Header() {
   }, []);
 
   const handleLogout = () => {
-    // Clear storage and redirect
     localStorage.removeItem("currentUser");
     localStorage.removeItem("token");
     setCurrentUser(null);
@@ -28,6 +27,12 @@ function Header() {
       navigate("/profile");
     }
   };
+
+  // Decide dashboard link by role
+  const dashboardLink =
+    currentUser?.role === "teacher" || currentUser?.role === "instructor"
+      ? "/instructor/dashboard"
+      : "/student/dashboard";
 
   return (
     <header className="bg-white shadow-sm">
@@ -47,6 +52,15 @@ function Header() {
             >
               Explore
             </Link>
+
+            {currentUser && (
+              <Link
+                to={dashboardLink}
+                className="text-gray-700 hover:text-blue-600 transition-colors"
+              >
+                Dashboard
+              </Link>
+            )}
 
             {currentUser ? (
               <div className="relative group">

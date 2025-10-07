@@ -20,6 +20,7 @@
     "chart.js": "^4.5.0",
     "emoji-picker-react": "^4.13.2",
     "fayda": "^0.0.14",
+    "json2csv": "^6.0.0-alpha.2",
     "lucide-react": "^0.540.0",
     "openai": "^5.15.0",
     "react": "^19.1.1",

@@ -12,6 +12,7 @@ import VerifyOTP from "./components/VerifyOTP";
 import CourseDetail from "./components/CourseDetail";
 import StudentWrapper from "./components/StudentWrapper";
 import Profile from "./pages/InstructorProfile";
+import AddCourse from "./pages/AddCourse";
 
 // Footer links pages
 import PrivacyPolicy from "./pages/PrivacyPolicy";
@@ -52,6 +53,7 @@ function App() {
         {/* Teacher */}
         <Route path="/instructor/dashboard" element={<TeacherDashboard />} />
         <Route path="/instructor/profile" element={<Profile />} />
+        <Route path="/instructor/add-course" element={<AddCourse />} />
 
         {/* Admin */}
         <Route path="/admin" element={<AdminDashboard />} />

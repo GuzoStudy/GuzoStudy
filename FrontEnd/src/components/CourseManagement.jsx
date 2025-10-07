@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
-import { coursePerformanceData } from '../data/teacherData';
+import { useNavigate } from 'react-router-dom';
 
 const CourseManagement = () => {
-  const [showCreateModal, setShowCreateModal] = useState(false);
   const [viewMode, setViewMode] = useState('grid');
+  const navigate = useNavigate();
 
   const courses = [
     {
@@ -70,7 +70,7 @@ const CourseManagement = () => {
             </button>
           </div>
           <button
-            onClick={() => setShowCreateModal(true)}
+            onClick={() => navigate('/instructor/add-course')}
             className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm font-medium"
           >
             Create New Course
@@ -229,50 +229,8 @@ const CourseManagement = () => {
         </div>
       )}
 
-      {/* Create Course Modal */}
-      {showCreateModal && (
-        <div className="fixed inset-0 bg-gray-600 bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white rounded-lg p-6 w-full max-w-md">
-            <h3 className="text-lg font-medium text-gray-900 mb-4">Create New Course</h3>
-            <form className="space-y-4">
-              <div>
-                <label className="block text-sm font-medium text-gray-700">Course Title</label>
-                <input type="text" className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2" />
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700">Description</label>
-                <textarea className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2" rows={3}></textarea>
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700">Category</label>
-                <select className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2">
-                  <option>Programming</option>
-                  <option>Web Development</option>
-                  <option>Data Science</option>
-                  <option>Design</option>
-                </select>
-              </div>
-              <div className="flex justify-end space-x-3">
-                <button
-                  type="button"
-                  onClick={() => setShowCreateModal(false)}
-                  className="px-4 py-2 border border-gray-300 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-50"
-                >
-                  Cancel
-                </button>
-                <button
-                  type="submit"
-                  className="px-4 py-2 bg-blue-600 border border-transparent rounded-md text-sm font-medium text-white hover:bg-blue-700"
-                >
-                  Create Course
-                </button>
-              </div>
-            </form>
-          </div>
-        </div>
-      )}
     </div>
   );
-};
+}
 
 export default CourseManagement;

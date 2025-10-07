@@ -8,19 +8,28 @@ function ForgotPassword() {
   const [email, setEmail] = useState('');
   const [error, setError] = useState('');
   const [message, setMessage] = useState('');
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
     setMessage('');
+    setLoading(true);
 
     try {
-      await axios.post('https://guzostudy.onrender.com/api/auth/forgot-password', { email });
-      setMessage('OTP sent! Check your email.');
-      navigate('/reset-password', { state: { email } });
+      await axios.post('https://guzostudy-1.onrender.com/api/users/forgot-password', { email });
+      setMessage('✅ OTP sent! Check your email.');
+      
+      // wait 1s so user sees the message
+      setTimeout(() => {
+        navigate('/reset-password', { state: { email } });
+      }, 1000);
+
     } catch (err) {
       setError(err.response?.data?.message || 'Failed to send OTP');
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -44,7 +53,15 @@ function ForgotPassword() {
             {message && <p className="text-green-600">{message}</p>}
             {error && <p className="text-red-600">{error}</p>}
 
-            <button className="w-full py-2 bg-blue-600 text-white rounded-md">Send OTP</button>
+            <button
+              type="submit"
+              disabled={loading}
+              className={`w-full py-2 rounded-md text-white ${
+                loading ? 'bg-blue-400 cursor-not-allowed' : 'bg-blue-600 hover:bg-blue-700'
+              }`}
+            >
+              {loading ? 'Sending...' : 'Send OTP'}
+            </button>
           </form>
         </div>
       </div>
