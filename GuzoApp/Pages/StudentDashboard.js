@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import {
   View,
   Text,
@@ -7,6 +7,7 @@ import {
   TouchableOpacity,
   StyleSheet,
   SafeAreaView,
+  Linking,
 } from "react-native";
 import {
   BookOpen,
@@ -17,6 +18,7 @@ import {
   PlayCircle,
   ArrowRight,
   Menu,
+  ExternalLink,
 } from "lucide-react-native";
 import { useNavigation } from "@react-navigation/native";
 import api from "../utils/api";
@@ -33,11 +35,11 @@ const StudentDashboard = () => {
     let mounted = true;
     (async () => {
       try {
-        const res = await api.get("/enrollments/student/my-courses");
+        const res = await api.get("https://guzostudy.onrender.com/enrollments/student/my-courses");
         if (!mounted) return;
         setEnrollments(res.data || []);
       } catch (e) {
-        // ignore
+        console.error("Error fetching enrollments:", e);
       } finally {
         if (mounted) setLoading(false);
       }
@@ -144,7 +146,8 @@ const StudentDashboard = () => {
       <View style={styles.menuBar}>
         <TouchableOpacity
           onPress={() => setIsSidebarOpen(!isSidebarOpen)}
-          style={styles.menuBtn}>
+          style={styles.menuBtn}
+        >
           <Menu size={24} color="#111827" />
         </TouchableOpacity>
         <Text style={styles.menuTitle}>Student Dashboard</Text>
@@ -162,12 +165,22 @@ const StudentDashboard = () => {
       <ScrollView style={styles.container}>
         {/* Header */}
         <View style={styles.header}>
-          <Text style={styles.welcome}>
-            Welcome back to <Text style={styles.brand}>Guzo</Text> 👋
-          </Text>
-          <Text style={styles.subtitle}>
-            Keep pushing forward — your learning journey is moving strong!
-          </Text>
+          <View style={{ flex: 1 }}>
+            <Text style={styles.welcome}>
+              Welcome back to <Text style={styles.brand}>Guzo</Text> 👋
+            </Text>
+            <Text style={styles.subtitle}>
+              Keep pushing forward — your learning journey is moving strong!
+            </Text>
+          </View>
+
+          <TouchableOpacity
+            onPress={() => Linking.openURL("https://vc-frontend2.vercel.app/")}
+            style={styles.liveClassBtn}
+          >
+            <ExternalLink size={18} color="white" />
+            <Text style={styles.liveClassText}>Go To LiveClass</Text>
+          </TouchableOpacity>
         </View>
 
         {/* Stats */}
@@ -175,7 +188,8 @@ const StudentDashboard = () => {
           {stats.map((stat) => (
             <View key={stat.label} style={styles.statCard}>
               <View
-                style={[styles.iconWrapper, { backgroundColor: stat.color }]}>
+                style={[styles.iconWrapper, { backgroundColor: stat.color }]}
+              >
                 <stat.icon size={28} color="white" />
               </View>
               <Text style={styles.statValue}>{stat.value}</Text>
@@ -190,7 +204,8 @@ const StudentDashboard = () => {
             <Text style={styles.sectionTitle}>Continue Learning</Text>
             <TouchableOpacity
               style={styles.row}
-              onPress={() => navigation.navigate("MyCoursesStudent")}>
+              onPress={() => navigation.navigate("MyCoursesStudent")}
+            >
               <Text style={styles.link}>View All</Text>
               <ArrowRight size={16} color="#2563eb" />
             </TouchableOpacity>
@@ -218,7 +233,9 @@ const StudentDashboard = () => {
                         ]}
                       />
                     </View>
-                    <Text style={styles.progressText}>{course.progress}%</Text>
+                    <Text style={styles.progressText}>
+                      {course.progress}%
+                    </Text>
                   </View>
                 </View>
                 <View style={styles.courseActions}>
@@ -251,14 +268,17 @@ const StudentDashboard = () => {
                   : deadline.priority === "medium"
                   ? styles.medium
                   : styles.low,
-              ]}>
+              ]}
+            >
               <Text style={styles.deadlineTitle}>{deadline.title}</Text>
               <Text style={styles.deadlineCourse}>{deadline.course}</Text>
               <View style={styles.deadlineFooter}>
                 <Text style={styles.deadlineDate}>
                   Due: {new Date(deadline.dueDate).toLocaleDateString()}
                 </Text>
-                <Text style={styles.deadlinePriority}>{deadline.priority}</Text>
+                <Text style={styles.deadlinePriority}>
+                  {deadline.priority}
+                </Text>
               </View>
             </View>
           ))}
@@ -285,10 +305,29 @@ const styles = StyleSheet.create({
   menuBtn: { marginRight: 12 },
   menuTitle: { fontSize: 18, fontWeight: "700", color: "#111827" },
   container: { flex: 1, padding: 16, backgroundColor: "#f9fafb" },
-  header: { marginBottom: 24 },
+  header: {
+    marginBottom: 24,
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+  },
   welcome: { fontSize: 22, fontWeight: "800", color: "#111827" },
   brand: { color: "#2563eb" },
   subtitle: { marginTop: 4, color: "#6b7280" },
+  liveClassBtn: {
+    flexDirection: "row",
+    alignItems: "center",
+    backgroundColor: "#2563eb",
+    paddingHorizontal: 12,
+    paddingVertical: 8,
+    borderRadius: 12,
+    elevation: 2,
+  },
+  liveClassText: {
+    color: "white",
+    fontWeight: "600",
+    marginLeft: 6,
+  },
   sidebar: {
     position: "absolute",
     left: 0,

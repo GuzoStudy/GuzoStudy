@@ -121,7 +121,7 @@ const ProfileStudent = () => {
             <span className="flex items-center gap-1"><MapPin size={16}/> {profile.location}</span>
           </div>
         </div>
-
+//analytics registerd studentandteacher
         <div>
           {!isEditing ? (
             <button 

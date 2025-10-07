@@ -1,4 +1,3 @@
-
 import React from "react";
 import {
   View,
@@ -8,7 +7,7 @@ import {
   Dimensions,
   ScrollView,
 } from "react-native";
-import { Home, BookOpen, Play, User, X } from "lucide-react-native";
+import { Home, BookOpen, Play, User, X, Bell } from "lucide-react-native";
 import { useNavigation } from "@react-navigation/native";
 
 const { width } = Dimensions.get("window");
@@ -18,28 +17,25 @@ const SidebarStudent = ({ isOpen = true, onClose }) => {
 
   const navItems = [
     { screen: "StudentDashboard", icon: Home, label: "Dashboard" },
-    { screen: "ExploreStudent", icon: BookOpen, label: "Explore Courses" }, 
+    { screen: "ExploreStudent", icon: BookOpen, label: "Explore Courses" },
     { screen: "MyCoursesStudent", icon: Play, label: "My Courses" },
+    { screen: "Notification", icon: Bell, label: "Notifications" },
     { screen: "ProfileStudent", icon: User, label: "Profile" },
   ];
 
+  if (!isOpen) return null; // hide completely when closed
+
   return (
     <View style={styles.overlayWrapper}>
-      {/* Overlay */}
-      {isOpen && (
-        <TouchableOpacity
-          style={styles.overlay}
-          onPress={onClose}
-          activeOpacity={1}
-        />
-      )}
+      {/* Dark overlay */}
+      <TouchableOpacity
+        style={styles.overlay}
+        onPress={onClose}
+        activeOpacity={1}
+      />
 
       {/* Sidebar */}
-      <View
-        style={[
-          styles.sidebar,
-          { transform: [{ translateX: isOpen ? 0 : -width }] },
-        ]}>
+      <View style={styles.sidebar}>
         {/* Header */}
         <View style={styles.header}>
           <View style={styles.brand}>
@@ -51,22 +47,23 @@ const SidebarStudent = ({ isOpen = true, onClose }) => {
           </TouchableOpacity>
         </View>
 
-        {/* Navigation Items */}
+        {/* Navigation */}
         <ScrollView contentContainerStyle={styles.navContainer}>
           {navItems.map((item) => (
             <TouchableOpacity
               key={item.screen}
               onPress={() => {
                 navigation.navigate(item.screen);
-                if (width <= 1024) onClose();
+                onClose();
               }}
-              style={styles.navItem}>
+              style={styles.navItem}
+            >
               <item.icon size={20} color="#374151" />
               <Text style={styles.navText}>{item.label}</Text>
             </TouchableOpacity>
           ))}
 
-          {/* Bottom Section: Weekly Progress */}
+          {/* Weekly Progress */}
           <View style={styles.progressBox}>
             <Text style={styles.progressTitle}>Weekly Progress</Text>
             <View style={styles.progressBar}>
@@ -87,28 +84,21 @@ const styles = StyleSheet.create({
     left: 0,
     height: "100%",
     width: "100%",
-    zIndex: 50,
+    flexDirection: "row",
+    zIndex: 100,
   },
   overlay: {
-    position: "absolute",
-    top: 0,
-    left: 0,
-    height: "100%",
-    width: "100%",
+    flex: 1,
     backgroundColor: "rgba(0,0,0,0.5)",
-    zIndex: 40,
   },
   sidebar: {
-    position: "absolute",
-    top: 0,
-    left: 0,
-    height: "100%",
     width: 260,
+    height: "100%",
     backgroundColor: "#fff",
     borderRightWidth: 1,
     borderColor: "#e5e7eb",
     paddingVertical: 20,
-    zIndex: 50,
+    zIndex: 101, // 👈 always above overlay
   },
   header: {
     flexDirection: "row",

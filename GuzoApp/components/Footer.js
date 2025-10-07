@@ -1,24 +1,24 @@
+// Footer.js
 import React from "react";
-import {
-  View,
-  Text,
-  TouchableOpacity,
-  Linking,
-  StyleSheet,
-} from "react-native";
+import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
+import { useNavigation } from "@react-navigation/native";
 
 export default function Footer() {
+  const navigation = useNavigation();
+
   return (
     <View style={styles.footer}>
       <View style={styles.container}>
         <View style={styles.linksContainer}>
-          <TouchableOpacity onPress={() => Linking.openURL("#")}>
+          <TouchableOpacity onPress={() => navigation.navigate("PrivacyPolicy")}>
             <Text style={styles.linkText}>Privacy Policy</Text>
           </TouchableOpacity>
-          <TouchableOpacity onPress={() => Linking.openURL("#")}>
+
+          <TouchableOpacity onPress={() => navigation.navigate("Terms")}>
             <Text style={styles.linkText}>Terms</Text>
           </TouchableOpacity>
-          <TouchableOpacity onPress={() => Linking.openURL("#")}>
+
+          <TouchableOpacity onPress={() => navigation.navigate("Contact")}>
             <Text style={styles.linkText}>Contact</Text>
           </TouchableOpacity>
         </View>
@@ -35,7 +35,7 @@ const styles = StyleSheet.create({
   footer: {
     backgroundColor: "#FFFFFF",
     borderTopWidth: 1,
-    borderTopColor: "#E5E7EB", 
+    borderTopColor: "#E5E7EB",
     paddingVertical: 24,
   },
   container: {
@@ -54,7 +54,7 @@ const styles = StyleSheet.create({
     marginBottom: 12,
   },
   linkText: {
-    color: "#4B5563", 
+    color: "#4B5563",
     fontSize: 16,
   },
   copyText: {

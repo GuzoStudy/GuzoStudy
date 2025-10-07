@@ -110,7 +110,7 @@ function SignupPage() {
               <Text style={styles.optionText}>Agree to terms</Text>
             </TouchableOpacity>
 
-            <TouchableOpacity onPress={() => Linking.openURL("#")}>
+            <TouchableOpacity onPress={() => navigation.navigate("Terms")}>
               <Text style={styles.forgotPassword}>View Terms</Text>
             </TouchableOpacity>
           </View>

@@ -17,7 +17,7 @@ import { useNavigation } from "@react-navigation/native";
 import SidebarStudent from "../components/SidebarStudent";
 import { Menu, Search } from "lucide-react-native";
 
-const API_BASE = "https://guzostudy.onrender.com/api";
+const API_BASE = "https://guzostudy.onrender.com/api/courses";
 
 const ExploreStudent = () => {
   const [courses, setCourses] = useState([]);

@@ -87,19 +87,6 @@ const Sidebar = ({ activeSection, onSectionChange }) => {
         left: '24px', 
         right: '24px' 
       }}>
-        <div style={{
-          padding: '16px',
-          backgroundColor: '#f1f5f9',
-          borderRadius: '12px',
-          textAlign: 'center'
-        }}>
-          <p style={{ fontSize: '14px', color: '#64748b', marginBottom: '8px' }}>
-            Admin Panel v2.0
-          </p>
-          <p style={{ fontSize: '12px', color: '#94a3b8' }}>
-            Last updated: Today
-          </p>
-        </div>
       </div>
     </aside>
   );
