@@ -5,12 +5,10 @@ import Home from "./pages/Home";
 import Login from "./pages/Login";
 import SignUp from "./pages/SignUp";
 import Explore from "./pages/Explore";
-import TeachOnG from "./components/TeachOnG";
 import ForgotPassword from "./components/ForgotPassword";
 import ResetPassword from "./components/ResetPassword";
 import VerifyOTP from "./components/VerifyOTP";
 import CourseDetail from "./components/CourseDetail";
-// import StudentWrapper from "./components/StudentWrapper";
 import Profile from "./pages/InstructorProfile";
 import AddCourse from "./pages/AddCourse";
 
@@ -20,9 +18,7 @@ import Terms from "./pages/Terms";
 import Contact from "./pages/Contact";
 
 // Dashboards
-import AdminDashboard from "./components/AdminDashboard";
 import TeacherDashboard from "./pages/TeachersDashboard";
-import StudentDashboard from "./pages/StudentDashbord";
 
 
 //chat bot
@@ -40,12 +36,10 @@ function App() {
         <Route path="/forgot-password" element={<ForgotPassword />} />
         <Route path="/reset-password" element={<ResetPassword />} />
         <Route path="/course/:id" element={<CourseDetail />} />
-        <Route path="/teach" element={<TeachOnG />} />
         <Route path="/explore" element={<Explore />} />
 
         {/* Student Pages */}
       
-        <Route path="/studentdashboard" element={<StudentDashboard />} />
 
         {/* Teacher */}
         <Route path="/instructor/dashboard" element={<TeacherDashboard />} />
@@ -53,7 +47,6 @@ function App() {
         <Route path="/instructor/add-course" element={<AddCourse />} />
 
         {/* Admin */}
-        <Route path="/admin" element={<AdminDashboard />} />
 
 
 
