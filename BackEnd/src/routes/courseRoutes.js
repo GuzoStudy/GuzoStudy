@@ -1,79 +1,92 @@
+// routes/courseRoutes.js
 import express from 'express';
+import {
+  createCourse,
+  updateCourse,
+  deleteCourse,
+  getCourse,
+  searchCourses,
+  createSection,
+  updateSection,
+  deleteSection,
+  createLesson,
+  updateLesson,
+  deleteLesson,
+  streamLesson,
+  markLessonCompleted,
+  getProgress,
+  getStudentDashboard,
+  getUpcomingLessons,
+  getInstructorCourseStats
+} from '../controllers/courseController.js';
+import { uploadThumbnail } from '../middlewares/upload.js'; // Assume upload middleware
 import { protect, authorize } from '../middlewares/auth.js';
-import Course from '../models/Course.js';
+import { updateCourseStatus } from '../controllers/courseController.js';
+
 
 const router = express.Router();
 
-// Get all courses (public)
-router.get('/', async (req, res) => {
-  try {
-    const courses = await Course.find().populate('instructor', 'name email');
-    res.json(courses);
-  } catch (err) {
-    res.status(500).json({ message: err.message });
-  }
-});
+// ----------------- COURSE ROUTES -----------------
+// POST /api/courses - Create course (instructor/admin/superadmin)
+router.post('/', protect, authorize('instructor', 'admin', 'superadmin'), uploadThumbnail.single('thumbnail'), createCourse);
 
-// Get single course by ID (public)
-router.get('/:id', async (req, res) => {
-  try {
-    const course = await Course.findById(req.params.id).populate('instructor', 'name email');
-    if (!course) return res.status(404).json({ message: 'Course not found' });
-    res.json(course);
-  } catch (err) {
-    res.status(500).json({ message: err.message });
-  }
-});
+// PUT /api/courses/:courseId - Update course (instructor/admin/superadmin)
+router.put('/:courseId', protect, authorize('instructor', 'admin', 'superadmin'), uploadThumbnail.single('thumbnail'), updateCourse);
 
-// Create course (instructor only)
-router.post('/', protect, authorize('instructor'), async (req, res) => {
-  try {
-    const { title, description, price } = req.body;
-    const course = new Course({
-      title,
-      description,
-      price,
-      instructor: req.user.id,
-    });
-    await course.save();
-    res.status(201).json(course);
-  } catch (err) {
-    res.status(500).json({ message: err.message });
-  }
-});
+// DELETE /api/courses/:courseId - Delete course (instructor/admin/superadmin)
+router.delete('/:courseId', protect, authorize('instructor', 'admin', 'superadmin'), deleteCourse);
 
-// Update course (instructor only)
-router.put('/:id', protect, authorize('instructor'), async (req, res) => {
-  try {
-    const course = await Course.findById(req.params.id);
-    if (!course) return res.status(404).json({ message: 'Course not found' });
+// GET /api/courses/:courseId - Get single course (protected, but can be public if needed)
+router.get('/:courseId', protect, getCourse);
 
-    if (course.instructor.toString() !== req.user.id)
-      return res.status(403).json({ message: 'Not authorized' });
+// GET /api/courses - Search courses (public, no auth for browsing)
+router.get('/', searchCourses);
 
-    Object.assign(course, req.body);
-    await course.save();
+router.get(
+  '/:courseId/progress',
+  protect,                 // require login
+  authorize('student'),    // only students can access
+  getProgress
+);
+// ----------------- SECTION ROUTES -----------------
+// POST /api/courses/:courseId/sections - Create section (instructor/admin/superadmin)
+router.post('/:courseId/sections', protect, authorize('instructor', 'admin', 'superadmin'), createSection);
 
-    res.json(course);
-  } catch (err) {
-    res.status(500).json({ message: err.message });
-  }
-});
+// PUT /api/courses/sections/:sectionId - Update section (instructor/admin/superadmin)
+router.put('/:courseId/sections/:sectionId', protect, authorize('instructor', 'admin', 'superadmin'), updateSection);
+// DELETE /api/courses/sections/:sectionId - Delete section (instructor/admin/superadmin)
+router.delete('/sections/:sectionId', protect, authorize('instructor', 'admin', 'superadmin'), deleteSection);
 
-// Delete course (instructor only)
-router.delete('/:id', protect, authorize('instructor'), async (req, res) => {
-  try {
-    const course = await Course.findById(req.params.id);
-    if (!course) return res.status(404).json({ message: 'Course not found' });
+// ----------------- LESSON ROUTES -----------------
+// POST /api/courses/sections/:sectionId/lessons - Create lesson (instructor/admin/superadmin)
+router.post('/:courseId/sections/:sectionId/lessons', protect, authorize('instructor', 'admin', 'superadmin'), createLesson);
 
-    if (course.instructor.toString() !== req.user.id)
-      return res.status(403).json({ message: 'Not authorized' });
+// PUT /api/courses/lessons/:lessonId - Update lesson (instructor/admin/superadmin)
+router.put('/lessons/:lessonId', protect, authorize('instructor', 'admin', 'superadmin'), updateLesson);
 
-    await course.remove();
-    res.json({ message: 'Course deleted' });
-  } catch (err) {
-    res.status(500).json({ message: err.message });
-  }
-});
+// DELETE /api/courses/lessons/:lessonId - Delete lesson (instructor/admin/superadmin)
+router.delete('/lessons/:lessonId', protect, authorize('instructor', 'admin', 'superadmin'), deleteLesson);
+
+// ----------------- STUDENT DASHBOARD & PROGRESS -----------------
+// GET /api/courses/student/dashboard - Student dashboard (student only)
+router.get('/student/dashboard', protect, authorize('student'), getStudentDashboard);
+
+// GET /api/courses/lessons/:lessonId/stream - Stream lesson (student/instructor)
+router.get('/lessons/:lessonId/stream', protect, authorize('student', 'instructor'), streamLesson);
+
+// POST /api/courses/lessons/:lessonId/complete - Mark lesson completed (student only)
+router.post('/lessons/:lessonId/complete', protect, authorize('student'), markLessonCompleted);
+
+// GET /api/courses/:courseId/progress - Get course progress (student only)
+router.get('/courses/:courseId/progress', protect, authorize('student'), getProgress);
+
+// ----------------- INSTRUCTOR / UPCOMING LESSONS -----------------
+// GET /api/courses/instructor/upcoming-lessons - Upcoming lessons for instructor
+router.get('/instructor/upcoming-lessons', protect, authorize('instructor'), getUpcomingLessons);
+
+// GET /api/courses/instructor/course-stats - Instructor course stats
+router.get('/instructor/course-stats', protect, authorize('instructor'), getInstructorCourseStats);
+
+router.patch('/:id/status', protect, updateCourseStatus);
 
 export default router;
