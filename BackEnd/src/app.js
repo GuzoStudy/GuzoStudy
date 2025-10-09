@@ -2,7 +2,7 @@
 import dotenv from 'dotenv';
 dotenv.config();
 
-// Validate all required secrets
+// ✅ Validate required secrets
 const requiredSecrets = ['JWT_SECRET', 'JWT_REFRESH_SECRET', 'MONGO_URI'];
 for (const secret of requiredSecrets) {
   if (!process.env[secret]) {
@@ -12,7 +12,14 @@ for (const secret of requiredSecrets) {
 }
 
 import express from 'express';
+import cors from 'cors';
+import path from 'path';
+import bodyParser from 'body-parser';
+import rateLimit from 'express-rate-limit';
+import listEndpoints from 'express-list-endpoints';
 import connectDB from './config/db.js';
+
+// ✅ Route imports
 import userRoutes from './routes/userRoutes.js';
 import courseRoutes from './routes/courseRoutes.js';
 import enrollmentRoutes from './routes/enrollmentRoutes.js';
@@ -24,21 +31,32 @@ import discussionRoutes from './routes/discussionRoutes.js';
 import reviewRoutes from './routes/reviewRoutes.js';
 import analyticsRoutes from './routes/analyticsRoutes.js';
 import notificationRoutes from './routes/notificationRoutes.js';
-import rateLimit from 'express-rate-limit';
-import listEndpoints from 'express-list-endpoints';
 import adminRoutes from './routes/adminRoutes.js';
-import path from 'path';
 import superadminRoutes from './routes/superadminRoutes.js';
-import bodyParser from 'body-parser';
-console.log('GMAIL_USERNAME:', process.env.GMAIL_USERNAME);
-console.log('GMAIL_PASSWORD:', process.env.GMAIL_PASSWORD ? '****' : 'undefined');
 
+// ✅ Connect MongoDB
 connectDB();
 
 const app = express();
-app.use(express.json());
 
-// Rate limiter: 5 requests per minute per IP
+// ✅ CORS setup: allow local frontend only
+app.use(
+  cors({
+    origin: 'http://localhost:5173', // your Vite frontend
+    credentials: true,
+  })
+);
+
+// ✅ Core middlewares
+app.use(express.json());
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
+
+// ✅ Debug email envs
+console.log('GMAIL_USERNAME:', process.env.GMAIL_USERNAME);
+console.log('GMAIL_PASSWORD:', process.env.GMAIL_PASSWORD ? '****' : 'undefined');
+
+// ✅ Rate limiter
 const limiter = rateLimit({
   windowMs: 60 * 1000, // 1 minute
   max: 5,
@@ -46,7 +64,11 @@ const limiter = rateLimit({
 });
 app.use('/api/users/register', limiter);
 app.use('/api/users/forgot-password', limiter);
+
+// ✅ Static uploads
 app.use('/uploads', express.static(path.resolve('./uploads')));
+
+// ✅ Routes
 app.use('/api/users', userRoutes);
 app.use('/api/courses', courseRoutes);
 app.use('/api/enrollments', enrollmentRoutes);
@@ -60,18 +82,18 @@ app.use('/api/analytics', analyticsRoutes);
 app.use('/api/notifications', notificationRoutes);
 app.use('/api/admin', adminRoutes);
 app.use('/api/superadmin', superadminRoutes);
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: true }));
+
+// ✅ Global error handler
 app.use((err, req, res, next) => {
   console.error('Server error:', err.message);
   res.status(500).json({ message: err.message });
 });
 
-// Log all registered routes
-console.log("📌 Registered Routes:");
+// ✅ Debug info
+console.log('📌 Registered Routes:');
 console.table(listEndpoints(app));
-console.log('✅ BASE_URL:', process.env.BASE_URL);
-console.log('✅ FRONTEND_URL:', process.env.FRONTEND_URL);
 
 const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+app.listen(PORT, () =>
+  console.log(`🚀 Server running on port ${PORT}`)
+);
