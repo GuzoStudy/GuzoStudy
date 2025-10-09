@@ -4,7 +4,6 @@ import TSidebar from '../components/TSidebar';
 import Dashboard from '../components/Dashboard';
 import CourseManagement from '../components/CourseManagement';
 import LiveClasses from '../components/LiveClasses';
-import StudentProgress from '../components/StudentProgress';
 import EarningsReport from '../components/EarningsReport';
 import Profile from './InstructorProfile';
 import Messages from '../components/Messages';
