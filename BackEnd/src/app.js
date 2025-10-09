@@ -31,8 +31,10 @@ import discussionRoutes from './routes/discussionRoutes.js';
 import reviewRoutes from './routes/reviewRoutes.js';
 import analyticsRoutes from './routes/analyticsRoutes.js';
 import notificationRoutes from './routes/notificationRoutes.js';
-import adminRoutes from './routes/adminRoutes.js';
-import superadminRoutes from './routes/superadminRoutes.js';
+import chatRoutes from './routes/chatRoutes.js';
+import rateLimit from 'express-rate-limit';
+import listEndpoints from 'express-list-endpoints';
+import cors from 'cors';
 
 // ✅ Connect MongoDB
 connectDB();
@@ -80,8 +82,7 @@ app.use('/api/courses/:courseId/discussions', discussionRoutes);
 app.use('/api/reviews', reviewRoutes);
 app.use('/api/analytics', analyticsRoutes);
 app.use('/api/notifications', notificationRoutes);
-app.use('/api/admin', adminRoutes);
-app.use('/api/superadmin', superadminRoutes);
+app.use('/api', chatRoutes); // Chat routes
 
 // ✅ Global error handler
 app.use((err, req, res, next) => {

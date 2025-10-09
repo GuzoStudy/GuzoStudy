@@ -4,8 +4,7 @@ import { Search, Users, Star } from "lucide-react";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
 import axios from "axios";
-
-const API_BASE = "https://guzostudy.onrender.com/api";
+import { BASE_URL } from "../config"; // <- import your base URL
 
 const Explore = () => {
   const [courses, setCourses] = useState([]);
@@ -16,17 +15,18 @@ const Explore = () => {
   const token = localStorage.getItem("token");
   const isLoggedIn = !!token;
 
+  const fetchCourses = async () => {
+    try {
+      const res = await axios.get(`${BASE_URL}/api/courses`);
+      setCourses(res.data);
+    } catch (err) {
+      console.error("Failed to fetch courses:", err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   useEffect(() => {
-    const fetchCourses = async () => {
-      try {
-        const res = await axios.get(`${API_BASE}/courses`);
-        setCourses(res.data);
-      } catch (err) {
-        console.error("Failed to fetch courses:", err);
-      } finally {
-        setLoading(false);
-      }
-    };
     fetchCourses();
   }, []);
 
@@ -38,7 +38,7 @@ const Explore = () => {
 
     try {
       await axios.post(
-        `${API_BASE}/enrollments/${courseId}/enroll`,
+        `${BASE_URL}/api/enrollments/${courseId}/enroll`,
         {},
         { headers: { Authorization: `Bearer ${token}` } }
       );
@@ -96,7 +96,7 @@ const Explore = () => {
                 className="bg-white rounded-2xl shadow-md hover:shadow-lg transition-transform transform hover:-translate-y-1 overflow-hidden flex flex-col"
               >
                 <img
-                  src={course.thumbnail || "https://source.unsplash.com/400x300/?education,course"}
+                  src={course.thumbnail ? `${BASE_URL}/${course.thumbnail}` : "https://source.unsplash.com/400x300/?education,course"}
                   alt={course.title}
                   className="w-full h-48 object-cover"
                 />
