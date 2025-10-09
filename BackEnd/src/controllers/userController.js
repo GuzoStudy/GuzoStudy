@@ -168,27 +168,46 @@ export const register = async (req, res) => {
 export const verifyOtp = async (req, res) => {
   try {
     const { email, otp } = req.body;
-    const user = await User.findOne({ email, isDeleted: false });
-    if (!user) return res.status(404).json({ message: 'User not found' });
 
-    if (!user.otp || user.otp.code !== otp || user.otp.expiresAt < Date.now()) {
+    if (!email || !otp) {
+      return res.status(400).json({ message: 'Email and OTP are required' });
+    }
+
+    const user = await User.findOne({ email, isDeleted: false });
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    // Check if OTP exists and is valid
+    if (
+      !user.otp ||
+      user.otp.code !== otp ||
+      user.otp.expiresAt < Date.now()
+    ) {
+      // Increment OTP attempts safely
       user.otp = user.otp || {};
       user.otp.attempts = (user.otp.attempts || 0) + 1;
       await user.save();
+
       return res.status(400).json({ message: 'Invalid or expired OTP' });
     }
 
-    user.isVerified = { verified: true, token: undefined, expiresAt: undefined };
-    user.otp = undefined;
+    // Mark user as verified
+    user.isVerified = true; // simpler boolean
+    user.otp = undefined;   // remove OTP after successful verification
     user.updatedBy = user._id;
+
     await user.save();
 
-    await logAction(user._id, 'verify_otp', { email: user.email }, req);
+    // Optional: log action
+    if (typeof logAction === 'function') {
+      await logAction(user._id, 'verify_otp', { email: user.email }, req);
+    }
 
     res.json({ message: 'Email verified successfully' });
   } catch (err) {
     console.error('Verify OTP error:', err);
-    res.status(500).json({ message: err.message });
+    res.status(500).json({ message: 'Server error: ' + err.message });
   }
 };
 
@@ -291,27 +310,50 @@ export const refreshToken = async (req, res) => {
 
 
 // Resend OTP
+
 export const resendOtp = async (req, res) => {
   try {
     const { email } = req.body;
-    const user = await User.findOne({ email, isDeleted: false });
-    if (!user) return res.status(404).json({ message: 'User not found' });
 
-    const newOtp = generateOtp();
-    user.otp = { code: newOtp, expiresAt: Date.now() + 5 * 60 * 1000, attempts: 0 };
+    if (!email) {
+      return res.status(400).json({ message: 'Email is required' });
+    }
+
+    const user = await User.findOne({ email, isDeleted: false });
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    // Generate new OTP
+    const newOtp = generateOtp(); // e.g., 6-digit
+    user.otp = {
+      code: newOtp,
+      expiresAt: Date.now() + 5 * 60 * 1000, // 5 minutes
+      attempts: 0,
+    };
     user.updatedBy = user._id;
     await user.save();
 
-    await sendEmail(email, 'Resend OTP', `Your new OTP: ${newOtp}`);
+    // Send OTP email
+    await sendEmail(
+      email,
+      'Your GuZo Study OTP Code',
+      newOtp,
+      user.name || 'Student'
+    );
 
-    await logAction(user._id, 'resend_otp', { email: user.email }, req);
+    // Log action if function exists
+    if (typeof logAction === 'function') {
+      await logAction(user._id, 'resend_otp', { email: user.email }, req);
+    }
 
     res.json({ message: 'New OTP sent to your email' });
   } catch (err) {
     console.error('Resend OTP error:', err);
-    res.status(500).json({ message: err.message });
+    res.status(500).json({ message: 'Server error: ' + err.message });
   }
 };
+
 
 // Get Profile
 export const getProfile = async (req, res) => {
