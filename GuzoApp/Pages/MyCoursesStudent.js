@@ -1,4 +1,3 @@
-// MyCoursesStudent.js
 import React, { useEffect, useMemo, useState } from "react";
 import {
   View,
@@ -12,7 +11,7 @@ import {
   Alert,
 } from "react-native";
 import { PlayCircle, CheckCircle2, Clock, Award } from "lucide-react-native";
-import api from "../utils/api"; 
+import api from "../utils/api";
 
 const StatsCard = ({ icon, label, value, bgColor }) => (
   <View style={[styles.statCard, { backgroundColor: "#fff" }]}>
@@ -63,7 +62,9 @@ const MyCoursesStudent = () => {
 
     (async () => {
       try {
-        const res = await api.get("/enrollments/student/my-courses");
+        const res = await api.get(
+          "https://guzostudy.onrender.com/api/enrollments"
+        );
         if (!mounted) return;
         setEnrollments(res.data || []);
       } catch (e) {

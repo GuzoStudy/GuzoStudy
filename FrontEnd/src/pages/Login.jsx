@@ -27,7 +27,7 @@ function Login() {
 
     try {
       const response = await axios.post(
-        'https://guzostudy.onrender.com/api/auth/login',
+        'https://guzostudy-1.onrender.com/api/users/login',
         { email: formData.email, password: formData.password }
       );
 
@@ -35,8 +35,14 @@ function Login() {
       localStorage.setItem('currentUser', JSON.stringify(user));
       localStorage.setItem('token', token);
 
-      // Always redirect to student dashboard
-      navigate('/student/dashboard');
+      // Redirect based on role
+      if (user.role === 'student') {
+        navigate('/studentDashboard');
+      } else if (user.role === 'instructor') {
+        navigate('/instructor/dashboard');
+      } else {
+        navigate('/'); // fallback
+      }
     } catch (err) {
       setError(err.response?.data?.message || 'Login failed');
     }
@@ -105,7 +111,12 @@ function Login() {
               </span>
             </div>
 
-            <button className="w-full py-2 bg-blue-600 text-white rounded-md">Login</button>
+            <button
+              type="submit"
+              className="w-full py-2 bg-blue-600 text-white rounded-md"
+            >
+              Login
+            </button>
           </form>
 
           <p className="text-sm text-gray-600">

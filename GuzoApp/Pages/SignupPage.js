@@ -36,7 +36,7 @@ function SignupPage() {
 
     try {
       const response = await fetch(
-        "https://guzostudy.onrender.com/api/auth/register",
+        "https://guzostudy.onrender.com/api/users/register",
         {
           method: "POST",
           headers: {
@@ -110,7 +110,7 @@ function SignupPage() {
               <Text style={styles.optionText}>Agree to terms</Text>
             </TouchableOpacity>
 
-            <TouchableOpacity onPress={() => Linking.openURL("#")}>
+            <TouchableOpacity onPress={() => navigation.navigate("Terms")}>
               <Text style={styles.forgotPassword}>View Terms</Text>
             </TouchableOpacity>
           </View>
@@ -135,7 +135,6 @@ function SignupPage() {
         </View>
       </ScrollView>
 
-      {/* Footer sticks at the bottom */}
       <Footer />
     </View>
   );

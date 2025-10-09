@@ -2,357 +2,346 @@ import React, { useState } from "react";
 import {
   View,
   Text,
-  ScrollView,
   TextInput,
+  ScrollView,
   TouchableOpacity,
+  Image,
+  Switch,
   StyleSheet,
-  FlatList,
 } from "react-native";
-import { Feather } from "@expo/vector-icons";
 
-const ProfileStudent = () => {
-  const [isEditing, setIsEditing] = useState(false);
-  const [activeTab, setActiveTab] = useState("overview");
-
-  const [profile, setProfile] = useState({
-    firstName: "Nahom",
-    lastName: "Tesfaye",
-    email: "nahom.tesfaye@guzo.et",
-    phone: "+251 911 234 567",
-    location: "Addis Ababa, Ethiopia",
-    bio: "Curious learner exploring programming and design. I believe education is the key to building the future of Ethiopia.",
-    joinDate: "2024-03-10",
-    timezone: "East Africa Time (EAT)",
-    learningGoal: "Finish 10 Guzo courses in 2025",
-    weeklyGoal: "12 hours per week",
-  });
-
-  const achievements = [
-    {
-      id: 1,
-      title: "Amharic Web Developer",
-      description: "Completed Guzo’s React in Amharic course",
-      date: "2024-12-15",
-      icon: "award",
-      color: "#2563eb",
+const Profile = () => {
+  const mockProfile = {
+    full_name: "Cedy N.",
+    bio: "Passionate learner exploring web development and UI design.",
+    profile_picture: "https://i.pravatar.cc/120?img=12",
+    contact_info: {
+      email: "cedy@example.com",
+      phone: "+251912345678",
     },
-    {
-      id: 2,
-      title: "Digital Innovator",
-      description: "Presented project in local hackathon",
-      date: "2024-11-28",
-      icon: "award",
-      color: "#8b5cf6",
+    learning_preferences: {
+      topics: ["React", "TailwindCSS", "Laravel"],
+      language: "en",
+      notifications: true,
     },
-    {
-      id: 3,
-      title: "Early Guzo Explorer",
-      description: "Joined Guzo community in 2024",
-      date: "2024-03-10",
-      icon: "calendar",
-      color: "#059669",
-    },
-  ];
-
-  const learningStats = [
-    { label: "Courses Completed", value: "5", icon: "book-open" },
-    { label: "Total Study Time", value: "142h", icon: "clock" },
-    { label: "Current Streak", value: "21 days", icon: "target" },
-    { label: "Certificates Earned", value: "3", icon: "award" },
-  ];
-
-  const recentActivity = [
-    {
-      id: 1,
-      title: 'Finished "JavaScript ከመሠረት እስከ ላይ"',
-      date: "4 hours ago",
-      icon: "book-open",
-    },
-    {
-      id: 2,
-      title: 'Earned "Amharic Web Developer" certificate',
-      date: "2 days ago",
-      icon: "award",
-    },
-    {
-      id: 3,
-      title: 'Started "Python for Data Science"',
-      date: "1 week ago",
-      icon: "book-open",
-    },
-  ];
-
-  const handleSave = () => setIsEditing(false);
-  const handleCancel = () => setIsEditing(false);
-  const handleInputChange = (field, value) => {
-    setProfile((prev) => ({ ...prev, [field]: value }));
   };
 
-  const renderOverview = () => (
-    <View style={styles.grid}>
-      <View style={styles.section}>
-        <Text style={styles.sectionTitle}>Personal Information</Text>
-        {["firstName", "lastName", "email", "phone", "location", "bio"].map(
-          (field) => (
-            <View key={field} style={styles.field}>
-              <Text style={styles.label}>{field}</Text>
-              {isEditing ? (
-                <TextInput
-                  style={[styles.input, field === "bio" && styles.textArea]}
-                  multiline={field === "bio"}
-                  value={profile[field]}
-                  onChangeText={(val) => handleInputChange(field, val)}
-                />
-              ) : (
-                <Text style={styles.value}>{profile[field]}</Text>
-              )}
-            </View>
-          )
-        )}
-      </View>
+  const [formData, setFormData] = useState(mockProfile);
+  const [editing, setEditing] = useState(false);
+  const [changingPassword, setChangingPassword] = useState(false);
+  const [passwordData, setPasswordData] = useState({
+    newPassword: "",
+    confirmPassword: "",
+  });
 
-      <View style={styles.section}>
-        <Text style={styles.sectionTitle}>Learning Preferences</Text>
-        {["learningGoal", "weeklyGoal", "timezone"].map((field) => (
-          <View key={field} style={styles.field}>
-            <Text style={styles.label}>{field}</Text>
-            {isEditing ? (
-              <TextInput
-                style={styles.input}
-                value={profile[field]}
-                onChangeText={(val) => handleInputChange(field, val)}
-              />
-            ) : (
-              <Text style={styles.value}>{profile[field]}</Text>
-            )}
-          </View>
-        ))}
-      </View>
-    </View>
-  );
+  const handleChange = (key, value) => {
+    setFormData((prev) => ({ ...prev, [key]: value }));
+  };
+
+  const handleContactChange = (key, value) => {
+    setFormData((prev) => ({
+      ...prev,
+      contact_info: { ...prev.contact_info, [key]: value },
+    }));
+  };
+
+  const handlePreferenceChange = (key, value) => {
+    setFormData((prev) => ({
+      ...prev,
+      learning_preferences: {
+        ...prev.learning_preferences,
+        [key]: value,
+      },
+    }));
+  };
+
+  const handleTopicsChange = (text) => {
+    const topics = text.split(",").map((t) => t.trim());
+    handlePreferenceChange("topics", topics);
+  };
 
   return (
     <ScrollView style={styles.container}>
-      {/* Profile Header */}
-      <View style={styles.header}>
-        <View style={styles.avatar}>
-          <Feather name="user" size={40} color="#fff" />
-        </View>
+      <Text style={styles.header}>My Profile</Text>
 
-        <View style={{ flex: 1 }}>
-          <Text style={styles.name}>
-            {profile.firstName} {profile.lastName}
-          </Text>
-          <Text style={styles.email}>{profile.email}</Text>
+      {/* PERSONAL INFO */}
+      <View style={styles.section}>
+        <View style={styles.sectionHeader}>
+          <Text style={styles.sectionTitle}>Personal Information</Text>
 
-          <View style={styles.metaRow}>
-            <Feather name="calendar" size={16} color="#6b7280" />
-            <Text style={styles.meta}>
-              Joined {new Date(profile.joinDate).toLocaleDateString()}
-            </Text>
-            <Feather
-              name="map-pin"
-              size={16}
-              color="#6b7280"
-              style={{ marginLeft: 16 }}
-            />
-            <Text style={styles.meta}>{profile.location}</Text>
-          </View>
-        </View>
-
-        <View>
-          {!isEditing ? (
+          {!editing ? (
             <TouchableOpacity
-              style={styles.editBtn}
-              onPress={() => setIsEditing(true)}>
-              <Feather name="edit-2" size={16} color="#fff" />
-              <Text style={styles.btnText}> Edit</Text>
+              onPress={() => setEditing(true)}
+              style={styles.editButton}>
+              <Text style={styles.editButtonText}>Edit Profile</Text>
             </TouchableOpacity>
           ) : (
-            <View style={{ flexDirection: "row" }}>
+            <View style={{ flexDirection: "row", gap: 10 }}>
               <TouchableOpacity
-                style={[styles.editBtn, { backgroundColor: "#059669" }]}
-                onPress={handleSave}>
-                <Feather name="save" size={16} color="#fff" />
-                <Text style={styles.btnText}> Save</Text>
+                onPress={() => setEditing(false)}
+                style={styles.cancelButton}>
+                <Text style={styles.cancelButtonText}>Cancel</Text>
               </TouchableOpacity>
               <TouchableOpacity
-                style={[styles.editBtn, { backgroundColor: "#f1f5f9" }]}
-                onPress={handleCancel}>
-                <Feather name="x" size={16} color="#374151" />
-                <Text style={[styles.btnText, { color: "#374151" }]}>
-                  Cancel
-                </Text>
+                onPress={() => setEditing(false)}
+                style={styles.saveButton}>
+                <Text style={styles.saveButtonText}>Save Changes</Text>
               </TouchableOpacity>
             </View>
           )}
         </View>
+
+        <View style={{ alignItems: "center", marginBottom: 20 }}>
+          <Image
+            source={{ uri: formData.profile_picture }}
+            style={styles.profileImage}
+          />
+        </View>
+
+        <Text style={styles.label}>Profile Picture URL</Text>
+        <TextInput
+          style={[styles.input, !editing && styles.disabledInput]}
+          value={formData.profile_picture}
+          onChangeText={(val) => handleChange("profile_picture", val)}
+          editable={editing}
+        />
+
+        <Text style={styles.label}>Full Name</Text>
+        <TextInput
+          style={[styles.input, !editing && styles.disabledInput]}
+          value={formData.full_name}
+          onChangeText={(val) => handleChange("full_name", val)}
+          editable={editing}
+        />
+
+        <Text style={styles.label}>Bio</Text>
+        <TextInput
+          style={[
+            styles.input,
+            styles.textArea,
+            !editing && styles.disabledInput,
+          ]}
+          multiline
+          numberOfLines={3}
+          value={formData.bio}
+          onChangeText={(val) => handleChange("bio", val)}
+          editable={editing}
+        />
+
+        <Text style={styles.label}>Email</Text>
+        <TextInput
+          style={[styles.input, !editing && styles.disabledInput]}
+          value={formData.contact_info.email}
+          onChangeText={(val) => handleContactChange("email", val)}
+          editable={editing}
+        />
+
+        <Text style={styles.label}>Phone</Text>
+        <TextInput
+          style={[styles.input, !editing && styles.disabledInput]}
+          value={formData.contact_info.phone}
+          onChangeText={(val) => handleContactChange("phone", val)}
+          editable={editing}
+        />
       </View>
 
-      {/* Stats */}
-      <Text style={styles.sectionTitle}>Your Learning on Guzo</Text>
-      <View style={styles.statsGrid}>
-        {learningStats.map((s, i) => (
-          <View key={i} style={styles.statCard}>
-            <Feather name={s.icon} size={24} color="#2563eb" />
-            <Text style={styles.statValue}>{s.value}</Text>
-            <Text style={styles.statLabel}>{s.label}</Text>
-          </View>
-        ))}
+      {/* LEARNING PREFERENCES */}
+      <View style={styles.section}>
+        <Text style={styles.sectionTitle}>Learning Preferences</Text>
+
+        <Text style={styles.label}>Topics of Interest</Text>
+        <TextInput
+          style={[styles.input, !editing && styles.disabledInput]}
+          value={formData.learning_preferences.topics.join(", ")}
+          onChangeText={handleTopicsChange}
+          editable={editing}
+        />
+
+        <Text style={styles.label}>Preferred Language</Text>
+        <TextInput
+          style={[styles.input, !editing && styles.disabledInput]}
+          value={formData.learning_preferences.language}
+          onChangeText={(val) => handlePreferenceChange("language", val)}
+          editable={editing}
+        />
+
+        <View style={styles.switchRow}>
+          <Text style={styles.label}>Enable Notifications</Text>
+          <Switch
+            value={formData.learning_preferences.notifications}
+            onValueChange={(val) =>
+              handlePreferenceChange("notifications", val)
+            }
+            disabled={!editing}
+            thumbColor={
+              formData.learning_preferences.notifications ? "#8BD02A" : "#ccc"
+            }
+          />
+        </View>
       </View>
 
-      {/* Tabs */}
-      <View style={styles.tabRow}>
-        {["overview", "achievements", "activity"].map((tab) => (
+      {/* SECURITY SECTION */}
+      <View style={styles.section}>
+        <View style={styles.sectionHeader}>
+          <Text style={styles.sectionTitle}>Security</Text>
           <TouchableOpacity
-            key={tab}
-            onPress={() => setActiveTab(tab)}
-            style={[styles.tabBtn, activeTab === tab && styles.tabActive]}>
+            onPress={() => setChangingPassword(!changingPassword)}
+            style={[
+              styles.passwordButton,
+              changingPassword
+                ? styles.cancelPasswordButton
+                : styles.changePasswordButton,
+            ]}>
             <Text
               style={[
-                styles.tabText,
-                activeTab === tab && styles.tabTextActive,
+                styles.passwordButtonText,
+                changingPassword && { color: "#333" },
               ]}>
-              {tab === "overview"
-                ? "Overview"
-                : tab === "achievements"
-                ? "Achievements"
-                : "Recent Activity"}
+              {changingPassword ? "Cancel" : "Change Password"}
             </Text>
           </TouchableOpacity>
-        ))}
-      </View>
+        </View>
 
-      {/* Content */}
-      <View style={styles.content}>
-        {activeTab === "overview" && renderOverview()}
-
-        {activeTab === "achievements" && (
-          <FlatList
-            data={achievements}
-            keyExtractor={(item) => item.id.toString()}
-            renderItem={({ item }) => (
-              <View style={styles.achievement}>
-                <Feather name={item.icon} size={22} color={item.color} />
-                <View style={{ marginLeft: 10 }}>
-                  <Text style={styles.achTitle}>{item.title}</Text>
-                  <Text style={styles.achDesc}>{item.description}</Text>
-                  <Text style={styles.achDate}>
-                    Earned {new Date(item.date).toLocaleDateString()}
-                  </Text>
-                </View>
-              </View>
-            )}
-          />
-        )}
-
-        {activeTab === "activity" && (
-          <FlatList
-            data={recentActivity}
-            keyExtractor={(item) => item.id.toString()}
-            renderItem={({ item }) => (
-              <View style={styles.activity}>
-                <Feather name={item.icon} size={18} color="#2563eb" />
-                <View style={{ marginLeft: 8 }}>
-                  <Text style={styles.activityTitle}>{item.title}</Text>
-                  <Text style={styles.activityDate}>{item.date}</Text>
-                </View>
-              </View>
-            )}
-          />
+        {changingPassword && (
+          <View>
+            <TextInput
+              style={styles.input}
+              secureTextEntry
+              placeholder="New Password"
+              value={passwordData.newPassword}
+              onChangeText={(text) =>
+                setPasswordData((prev) => ({ ...prev, newPassword: text }))
+              }
+            />
+            <TextInput
+              style={styles.input}
+              secureTextEntry
+              placeholder="Confirm Password"
+              value={passwordData.confirmPassword}
+              onChangeText={(text) =>
+                setPasswordData((prev) => ({ ...prev, confirmPassword: text }))
+              }
+            />
+            <TouchableOpacity style={styles.saveButton}>
+              <Text style={styles.saveButtonText}>Update Password</Text>
+            </TouchableOpacity>
+          </View>
         )}
       </View>
     </ScrollView>
   );
 };
 
+export default Profile;
+
 const styles = StyleSheet.create({
-  container: { backgroundColor: "#f9fafb", padding: 16 },
+  container: {
+    flex: 1,
+    backgroundColor: "#F9FAFB",
+    padding: 16,
+  },
   header: {
-    backgroundColor: "#fff",
-    padding: 16,
-    borderRadius: 12,
-    flexDirection: "row",
-    alignItems: "center",
-    marginBottom: 24,
-    elevation: 2,
-  },
-  avatar: {
-    backgroundColor: "#2563eb",
-    width: 64,
-    height: 64,
-    borderRadius: 32,
-    alignItems: "center",
-    justifyContent: "center",
-    marginRight: 16,
-  },
-  name: { fontSize: 22, fontWeight: "700" },
-  email: { color: "#6b7280" },
-  metaRow: { flexDirection: "row", alignItems: "center", marginTop: 4 },
-  meta: { color: "#6b7280", marginLeft: 4 },
-  editBtn: {
-    flexDirection: "row",
-    backgroundColor: "#2563eb",
-    padding: 8,
-    borderRadius: 8,
-    alignItems: "center",
-    marginLeft: 8,
-  },
-  btnText: { fontWeight: "600", color: "#fff", marginLeft: 4 },
-  statsGrid: {
-    flexDirection: "row",
-    flexWrap: "wrap",
-    justifyContent: "space-between",
-    marginVertical: 16,
-  },
-  statCard: {
-    width: "48%",
-    backgroundColor: "#fff",
-    padding: 16,
-    borderRadius: 12,
-    alignItems: "center",
-    marginBottom: 12,
-    elevation: 2,
-  },
-  statValue: { fontSize: 20, fontWeight: "700" },
-  statLabel: { color: "#6b7280" },
-  tabRow: {
-    flexDirection: "row",
-    borderBottomWidth: 1,
-    borderColor: "#e5e7eb",
+    fontSize: 24,
+    fontWeight: "700",
     marginBottom: 16,
+    color: "#111827",
   },
-  tabBtn: { flex: 1, alignItems: "center", paddingVertical: 8 },
-  tabActive: { borderBottomWidth: 2, borderColor: "#2563eb" },
-  tabText: { color: "#6b7280" },
-  tabTextActive: { color: "#2563eb", fontWeight: "600" },
-  content: {
+  section: {
     backgroundColor: "#fff",
+    borderRadius: 16,
     padding: 16,
-    borderRadius: 12,
-    elevation: 2,
+    marginBottom: 16,
+    borderWidth: 1,
+    borderColor: "#E5E7EB",
   },
-  grid: { flexDirection: "row", justifyContent: "space-between" },
-  section: { width: "48%" },
-  sectionTitle: { fontWeight: "600", fontSize: 16, marginBottom: 8 },
-  field: { marginBottom: 12 },
-  label: { fontSize: 13, color: "#6b7280" },
+  sectionHeader: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    marginBottom: 10,
+  },
+  sectionTitle: {
+    fontSize: 18,
+    fontWeight: "600",
+    color: "#1F2937",
+  },
+  profileImage: {
+    width: 100,
+    height: 100,
+    borderRadius: 50,
+    borderWidth: 1,
+    borderColor: "#E5E7EB",
+  },
+  label: {
+    fontSize: 14,
+    color: "#374151",
+    marginBottom: 6,
+    marginTop: 10,
+  },
   input: {
     borderWidth: 1,
-    borderColor: "#d1d5db",
-    borderRadius: 6,
-    padding: 8,
-    marginTop: 4,
+    borderColor: "#D1D5DB",
+    borderRadius: 8,
+    padding: 10,
+    backgroundColor: "#fff",
+    color: "#111827",
   },
-  textArea: { height: 80, textAlignVertical: "top" },
-  value: { marginTop: 4, color: "#111827" },
-  achievement: { flexDirection: "row", marginBottom: 12, alignItems: "center" },
-  achTitle: { fontWeight: "600", fontSize: 15 },
-  achDesc: { color: "#6b7280" },
-  achDate: { color: "#9ca3af", fontSize: 12 },
-  activity: { flexDirection: "row", alignItems: "center", marginBottom: 12 },
-  activityTitle: { fontSize: 14 },
-  activityDate: { fontSize: 12, color: "#9ca3af" },
+  disabledInput: {
+    backgroundColor: "#F3F4F6",
+  },
+  textArea: {
+    height: 80,
+  },
+  editButton: {
+    backgroundColor: "#8BD02A",
+    paddingHorizontal: 12,
+    paddingVertical: 8,
+    borderRadius: 8,
+  },
+  editButtonText: {
+    color: "#fff",
+    fontWeight: "600",
+  },
+  cancelButton: {
+    backgroundColor: "#E5E7EB",
+    paddingHorizontal: 12,
+    paddingVertical: 8,
+    borderRadius: 8,
+  },
+  cancelButtonText: {
+    color: "#374151",
+    fontWeight: "600",
+  },
+  saveButton: {
+    backgroundColor: "#8BD02A",
+    paddingHorizontal: 12,
+    paddingVertical: 8,
+    borderRadius: 8,
+    marginTop: 10,
+  },
+  saveButtonText: {
+    color: "#fff",
+    fontWeight: "600",
+  },
+  switchRow: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    marginTop: 10,
+  },
+  passwordButton: {
+    paddingHorizontal: 12,
+    paddingVertical: 8,
+    borderRadius: 8,
+  },
+  changePasswordButton: {
+    backgroundColor: "#8BD02A",
+  },
+  cancelPasswordButton: {
+    backgroundColor: "#E5E7EB",
+  },
+  passwordButtonText: {
+    color: "#fff",
+    fontWeight: "600",
+  },
 });
-
-export default ProfileStudent;

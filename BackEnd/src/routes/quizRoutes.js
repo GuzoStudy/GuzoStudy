@@ -1,22 +1,44 @@
+// routes/quizRoutes.js
 import express from 'express';
+import {
+  createQuiz,
+  getQuizzes,
+  getQuiz,
+  submitQuiz,
+  getUserResults,
+  updateQuiz 
+} from '../controllers/quizController.js';
 import { protect, authorize } from '../middlewares/auth.js';
-import { createQuiz, getQuizzes, getQuiz, submitQuiz, getUserResults } from '../controllers/quizController.js';
+import { body, param, validationResult } from 'express-validator';
 
 const router = express.Router();
 
-// ✅ Instructor/Admin: create quiz
-router.post('/', protect, authorize('instructor', 'admin'), createQuiz);
+// ✅ Instructor/Admin routes
+router.post('/', createQuiz);
 
-// ✅ Get all quizzes for a course
-router.get('/course/:courseId', protect, getQuizzes);
+// ✅ Update quiz (status, title, etc.)
+router.patch(
+  '/:quizId',
+  protect,
+  authorize('instructor', 'admin', 'superadmin'),
+  param('quizId').isMongoId().withMessage('Valid quiz ID required'),
+  body('status').optional().isIn(['draft', 'published']).withMessage('Status must be draft or published'),
+  body('title').optional().isString().isLength({ min: 5, max: 200 }),
+  (req, res, next) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) return res.status(400).json({ errors: errors.array() });
+    next();
+  },
+  updateQuiz
+);
 
-// ✅ Get single quiz
-router.get('/:quizId', protect, getQuiz);
 
-// ✅ Submit quiz
-router.post('/:quizId/submit', protect, submitQuiz);
+// ✅ Public for enrolled users
+router.get('/course/:courseId', getQuizzes);
+router.get('/:quizId', getQuiz);
 
-// ✅ Get user's results
-router.get('/results/my', protect, getUserResults);
+// ✅ Student routes
+router.post('/:quizId/submit', submitQuiz);
+router.get('/results/me', getUserResults);
 
 export default router;

@@ -1,4 +1,3 @@
-// App.js
 import { Routes, Route } from "react-router-dom";
 
 // Main pages
@@ -6,51 +5,64 @@ import Home from "./pages/Home";
 import Login from "./pages/Login";
 import SignUp from "./pages/SignUp";
 import Explore from "./pages/Explore";
-import TeachOnG from "./components/TeachOnG";
 import ForgotPassword from "./components/ForgotPassword";
 import ResetPassword from "./components/ResetPassword";
 import VerifyOTP from "./components/VerifyOTP";
 import CourseDetail from "./components/CourseDetail";
-// Wrapper
-import StudentWrapper from "./components/StudentWrapper";
+import Profile from "./pages/InstructorProfile";
+import AddCourse from "./pages/AddCourse";
 
-// Admin
-import AdminDashboard from "./components/AdminDashboard";
+// Footer links pages
+import PrivacyPolicy from "./pages/PrivacyPolicy";
+import Terms from "./pages/Terms";
+import Contact from "./pages/Contact";
 
-// Teacher
+// Dashboards
 import TeacherDashboard from "./pages/TeachersDashboard";
 
-function App() {
 
+//chat bot
+import Chatbot from "./components/ChatBot";
+
+//student
+import { Dashboard } from "./pages/Dashbord.jsx";
+import { AdminDashboard } from "./pages/AdminDashboard.jsx";
+
+function App() {
   return (
     <div className="min-h-screen bg-white">
       <Routes>
         {/* Public Routes */}
         <Route path="/" element={<Home />} />
-
         <Route path="/signup" element={<SignUp />} />
         <Route path="/verify-otp" element={<VerifyOTP />} />
         <Route path="/login" element={<Login />} />
         <Route path="/forgot-password" element={<ForgotPassword />} />
         <Route path="/reset-password" element={<ResetPassword />} />
         <Route path="/course/:id" element={<CourseDetail />} />
-
-        <Route path="/teach" element={<TeachOnG />} />
         <Route path="/explore" element={<Explore />} />
 
-        {/* Student Wrapper with IDs */}
-        <Route path="/student/dashboard" element={<StudentWrapper pageId="dashboard" />} />
-        <Route path="/student/courses" element={<StudentWrapper pageId="courses" />} />
-        <Route path="/student/my-courses" element={<StudentWrapper pageId="my-courses" />} />
-        <Route path="/student/profile" element={<StudentWrapper pageId="profile" />} />
-        <Route path="/student/course/:id" element={<StudentWrapper pageId="course-detail" />} />
+        {/* Student Pages */}
+        <Route path="/studentdashbord" element={<Dashboard />} />
+        <Route path="/admindashbord" element={<AdminDashboard />} />
+      
 
-        {/* Admin Route*/}
-        <Route path="/admin" element={<AdminDashboard />} />
+        {/* Teacher */}
+        <Route path="/instructor/dashboard" element={<TeacherDashboard />} />
+        <Route path="/instructor/profile" element={<Profile />} />
+        <Route path="/instructor/add-course" element={<AddCourse />} />
 
-        {/* Teacher Route */}
-        <Route path="/teacher-dashboard" element={<TeacherDashboard />} />
+        {/* Admin */}
+
+
+
+        {/* Footer Links */}
+        <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+        <Route path="/terms" element={<Terms />} />
+        <Route path="/contact" element={<Contact />} />
+      {/* Add more routes as needed */}
       </Routes>
+      <Chatbot />
     </div>
   );
 }

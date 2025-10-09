@@ -3,10 +3,13 @@ import multer from 'multer';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import { dirname } from 'path';
-
+import fs from 'fs';
 // Resolve __dirname in ES modules
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
+
+
+
 
 // Dynamic path resolver (relative to project root)
 const getUploadPath = (folder) => path.resolve(__dirname, '..', '..', 'uploads', folder);

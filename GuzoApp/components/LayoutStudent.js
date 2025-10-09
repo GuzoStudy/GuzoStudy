@@ -16,8 +16,7 @@ const LayoutStudent = ({ children }) => {
         style={[
           styles.mainContent,
           { marginLeft: screenWidth > 768 && sidebarOpen ? 260 : 0 },
-        ]}
-      >
+        ]}>
         <Header onMenuClick={() => setSidebarOpen(!sidebarOpen)} />
         <View style={styles.pageContent}>{children}</View>
       </View>
@@ -34,7 +33,7 @@ const styles = StyleSheet.create({
   mainContent: {
     flex: 1,
     flexDirection: "column",
-    transition: "margin-left 0.3s ease", // won’t work in RN, but left for clarity
+    transition: "margin-left 0.3s ease",
   },
   pageContent: {
     flex: 1,

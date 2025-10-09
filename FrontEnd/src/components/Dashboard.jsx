@@ -1,15 +1,57 @@
 import React from 'react';
 import StatsCard from './StatsCard';
-import { teacherStats, revenueData, coursePerformanceData, recentActivities, liveClassesData } from '../data/teacherData';
-import { LineChart, Line, AreaChart, Area, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell } from 'recharts';
+import { useNavigate } from 'react-router-dom';
+import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 
 const Dashboard = () => {
+  const navigate = useNavigate();
+
+  // Dummy data with all numbers as 0
+  const teacherStats = [
+    { title: 'Total Courses', value: 0, change: 0, trend: 'up', icon: <svg /> },
+    { title: 'Students Enrolled', value: 0, change: 0, trend: 'up', icon: <svg /> },
+    { title: 'Revenue', value: 0, change: 0, trend: 'up', icon: <svg /> },
+    { title: 'Live Classes', value: 0, change: 0, trend: 'up', icon: <svg /> },
+  ];
+
+  const revenueData = [
+    { month: 'Jan', courseSales: 0, liveSessions: 0 },
+    { month: 'Feb', courseSales: 0, liveSessions: 0 },
+    { month: 'Mar', courseSales: 0, liveSessions: 0 },
+    { month: 'Apr', courseSales: 0, liveSessions: 0 },
+  ];
+
+  const coursePerformanceData = [
+    { course: 'Course 1', students: 0, rating: 0, revenue: 0 },
+    { course: 'Course 2', students: 0, rating: 0, revenue: 0 },
+    { course: 'Course 3', students: 0, rating: 0, revenue: 0 },
+    { course: 'Course 4', students: 0, rating: 0, revenue: 0 },
+    { course: 'Course 5', students: 0, rating: 0, revenue: 0 },
+  ];
+
+  const liveClassesData = [
+    { id: 1, title: 'Live Class 1', time: '-', students: 0, type: 'Online', status: 'upcoming' },
+    { id: 2, title: 'Live Class 2', time: '-', students: 0, type: 'Online', status: 'upcoming' },
+    { id: 3, title: 'Live Class 3', time: '-', students: 0, type: 'Online', status: 'upcoming' },
+  ];
+
+  const recentActivities = [
+    { type: 'enrollment', message: 'No recent activity', time: '-' },
+    { type: 'completion', message: 'No recent activity', time: '-' },
+    { type: 'payment', message: 'No recent activity', time: '-' },
+    { type: 'review', message: 'No recent activity', time: '-' },
+    { type: 'other', message: 'No recent activity', time: '-' },
+  ];
+
   return (
-    <div className="space-y-6">
-      <div className="flex justify-between items-center">
+    <div className="max-w-7xl mx-auto px-6 py-8 space-y-8">
+      <div className="flex flex-col md:flex-row md:justify-between md:items-center space-y-4 md:space-y-0">
         <h1 className="text-2xl font-semibold text-gray-800">Dashboard Overview</h1>
         <div className="flex space-x-3">
-          <button className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm font-medium">
+          <button 
+            className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm font-medium"
+            onClick={() => navigate('/instructor/add-course')}
+          >
             Create New Course
           </button>
           <button className="bg-white border border-gray-300 hover:bg-gray-50 text-gray-700 px-4 py-2 rounded-lg text-sm font-medium">
@@ -17,7 +59,7 @@ const Dashboard = () => {
           </button>
         </div>
       </div>
-      
+
       {/* Stats Cards */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         {teacherStats.map((stat, index) => (
@@ -40,8 +82,6 @@ const Dashboard = () => {
             <h2 className="text-lg font-medium text-gray-800">Revenue Trends</h2>
             <select className="text-sm border border-gray-300 rounded px-3 py-1">
               <option>Last 8 months</option>
-              <option>Last 6 months</option>
-              <option>Last year</option>
             </select>
           </div>
           <ResponsiveContainer width="100%" height={300}>
@@ -135,26 +175,26 @@ const Dashboard = () => {
           <div className="space-y-4">
             <div className="flex justify-between items-center">
               <span className="text-sm text-gray-600">Course Completion Rate</span>
-              <span className="text-sm font-semibold text-gray-800">87%</span>
+              <span className="text-sm font-semibold text-gray-800">0%</span>
             </div>
             <div className="w-full bg-gray-200 rounded-full h-2">
-              <div className="bg-green-500 h-2 rounded-full" style={{ width: '87%' }}></div>
+              <div className="bg-green-500 h-2 rounded-full" style={{ width: '0%' }}></div>
             </div>
             
             <div className="flex justify-between items-center">
               <span className="text-sm text-gray-600">Student Satisfaction</span>
-              <span className="text-sm font-semibold text-gray-800">4.8/5</span>
+              <span className="text-sm font-semibold text-gray-800">0/5</span>
             </div>
             <div className="w-full bg-gray-200 rounded-full h-2">
-              <div className="bg-yellow-500 h-2 rounded-full" style={{ width: '96%' }}></div>
+              <div className="bg-yellow-500 h-2 rounded-full" style={{ width: '0%' }}></div>
             </div>
 
             <div className="flex justify-between items-center">
               <span className="text-sm text-gray-600">Response Rate</span>
-              <span className="text-sm font-semibold text-gray-800">94%</span>
+              <span className="text-sm font-semibold text-gray-800">0%</span>
             </div>
             <div className="w-full bg-gray-200 rounded-full h-2">
-              <div className="bg-blue-500 h-2 rounded-full" style={{ width: '94%' }}></div>
+              <div className="bg-blue-500 h-2 rounded-full" style={{ width: '0%' }}></div>
             </div>
           </div>
         </div>

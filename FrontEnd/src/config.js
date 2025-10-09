@@ -1,0 +1,1 @@
+export const BASE_URL = "https://guzostudy-1.onrender.com";

@@ -1,134 +1,153 @@
 import React, { useState, useRef, useEffect } from "react";
-import axios from "axios";
+import { Send, X, Bot, Paperclip, Smile } from "lucide-react";
 
-const API_KEY = import.meta.env.VITE_OPENAI_API_KEY; // Make sure this is in your .env file
-
-export default function ChatBot() {
-  const [showChatbot, setShowChatbot] = useState(false);
+export default function Chatbot() {
+  const [isOpen, setIsOpen] = useState(false);
   const [messages, setMessages] = useState([
-    { role: "bot", text: "Hey there 👋 How can I help you today?" },
+    { sender: "bot", text: "Hello! 👋 How can I help you today?" },
   ]);
   const [input, setInput] = useState("");
-  const [loading, setLoading] = useState(false);
+  const messagesEndRef = useRef(null);
 
-  const chatBodyRef = useRef();
-
-  // Scroll to bottom whenever messages change
+  // Scroll to bottom on new message
   useEffect(() => {
-    if (chatBodyRef.current) {
-      chatBodyRef.current.scrollTop = chatBodyRef.current.scrollHeight;
-    }
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
 
-  const handleSend = async (e) => {
+  const sendMessage = async (e) => {
     e.preventDefault();
     if (!input.trim()) return;
 
-    const userMessage = { role: "user", text: input };
+    const userMessage = { sender: "user", text: input };
     setMessages((prev) => [...prev, userMessage]);
     setInput("");
-    setLoading(true);
+
+    // temporary "thinking..."
+    const thinkingId = Date.now();
+    setMessages((prev) => [
+      ...prev,
+      { sender: "bot", text: "thinking...", id: thinkingId, thinking: true },
+    ]);
 
     try {
-      const response = await axios.post(
-        "https://api.openai.com/v1/chat/completions",
-        {
-          model: "gpt-3.5-turbo",
-          messages: [...messages, userMessage],
-        },
-        {
-          headers: {
-            Authorization: `Bearer ${API_KEY}`,
-            "Content-Type": "application/json",
-          },
-        }
+      // call backend API
+      const res = await fetch("http://localhost:5000/api/chat", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ message: input }),
+      });
+      const data = await res.json();
+
+      // replace "thinking..." with actual response
+      setMessages((prev) =>
+        prev.map((m) =>
+          m.id === thinkingId ? { sender: "bot", text: data.reply } : m
+        )
       );
-
-      const botText =
-        response.data.choices?.[0]?.message?.content || "Sorry, I got an error";
-
-      setMessages((prev) => [...prev, { role: "bot", text: botText }]);
     } catch (err) {
       console.error(err);
-      setMessages((prev) => [
-        ...prev,
-        { role: "bot", text: "API Error. Check console.", error: true },
-      ]);
-    } finally {
-      setLoading(false);
+      setMessages((prev) =>
+        prev.map((m) =>
+          m.id === thinkingId
+            ? { sender: "bot", text: "⚠️ Error connecting to server." }
+            : m
+        )
+      );
     }
   };
 
   return (
     <div>
-      {/* Chatbot toggle button */}
+      {/* Toggle button */}
       <button
-        className="fixed bottom-8 right-8 w-12 h-12 rounded-full bg-indigo-700 text-white flex items-center justify-center text-2xl"
-        onClick={() => setShowChatbot(!showChatbot)}
+        onClick={() => setIsOpen(!isOpen)}
+        className="fixed bottom-6 right-6 w-14 h-14 flex items-center justify-center rounded-full bg-indigo-600 text-white shadow-lg hover:bg-indigo-700 transition"
       >
-        {showChatbot ? "×" : "💬"}
+        {isOpen ? <X size={24} /> : <Bot size={24} />}
       </button>
 
-      {/* Chatbot popup */}
-      {showChatbot && (
-        <div className="fixed bottom-24 right-8 w-96 bg-white rounded-xl shadow-lg flex flex-col">
+      {/* Chat popup */}
+      {isOpen && (
+        <div className="fixed bottom-24 right-6 w-96 bg-white rounded-2xl shadow-xl flex flex-col overflow-hidden">
           {/* Header */}
-          <div className="flex items-center justify-between p-4 bg-indigo-700 text-white rounded-t-xl">
-            <h2 className="text-lg font-semibold">Chatbot</h2>
-            <button onClick={() => setShowChatbot(false)}>▼</button>
+          <div className="flex items-center justify-between bg-indigo-600 text-black px-4 py-3">
+            <div className="flex items-center gap-2">
+              <div className="bg-white p-2 rounded-full">
+                <Bot className="text-indigo-600" size={20} />
+              </div>
+              <span className="font-semibold text-lg">Chatbot</span>
+            </div>
+            <button onClick={() => setIsOpen(false)}>
+              <X size={20} />
+            </button>
           </div>
 
-          {/* Body */}
-          <div
-            className="flex-1 overflow-y-auto p-4 flex flex-col gap-3 max-h-96"
-            ref={chatBodyRef}
-          >
-            {messages.map((msg, idx) => (
+          {/* Messages */}
+          <div className="flex-1 p-4 space-y-3 overflow-y-auto max-h-96">
+            {messages.map((m, idx) => (
               <div
                 key={idx}
-                className={`flex gap-2 ${
-                  msg.role === "user" ? "justify-end" : "justify-start"
+                className={`flex ${
+                  m.sender === "user" ? "justify-end" : "items-start gap-2"
                 }`}
               >
+                {m.sender === "bot" && (
+                  <div className="w-8 h-8 flex items-center justify-center rounded-full bg-indigo-600 text-white flex-shrink-0">
+                    <Bot size={16} />
+                  </div>
+                )}
                 <div
-                  className={`p-3 rounded-lg max-w-[70%] whitespace-pre-wrap ${
-                    msg.role === "user"
-                      ? "bg-indigo-700 text-white rounded-tr-sm"
-                      : "bg-gray-100 text-gray-800 rounded-tl-sm"
+                  className={`px-4 py-2 rounded-xl max-w-[75%] text-sm ${
+                    m.sender === "user"
+                      ? "bg-indigo-600 text-white rounded-br-sm"
+                      : "bg-indigo-100 text-gray-800 rounded-bl-sm"
                   }`}
                 >
-                  {msg.text}
+                  {m.thinking ? (
+                    <div className="flex gap-1">
+                      <span className="w-2 h-2 bg-indigo-400 rounded-full animate-bounce"></span>
+                      <span className="w-2 h-2 bg-indigo-400 rounded-full animate-bounce delay-150"></span>
+                      <span className="w-2 h-2 bg-indigo-400 rounded-full animate-bounce delay-300"></span>
+                    </div>
+                  ) : (
+                    m.text
+                  )}
                 </div>
               </div>
             ))}
-
-            {loading && (
-              <div className="flex justify-start gap-2">
-                <div className="p-3 rounded-lg max-w-[70%] bg-gray-100 text-gray-800 rounded-tl-sm">
-                  <span className="animate-pulse">.</span>
-                  <span className="animate-pulse delay-200">.</span>
-                  <span className="animate-pulse delay-400">.</span>
-                </div>
-              </div>
-            )}
+            <div ref={messagesEndRef} />
           </div>
 
-          {/* Footer */}
+          {/* Input */}
           <form
-            className="flex items-center p-3 border-t border-gray-200 gap-2"
-            onSubmit={handleSend}
+            onSubmit={sendMessage}
+            className="p-3 border-t flex items-center gap-2"
           >
-            <textarea
-              className="flex-1 p-2 border rounded-lg resize-none max-h-32"
-              placeholder="Message..."
+            <button
+              type="button"
+              className="p-2 rounded-full hover:bg-gray-100 text-gray-500"
+            >
+              <Paperclip size={18} />
+            </button>
+            <button
+              type="button"
+              className="p-2 rounded-full hover:bg-gray-100 text-gray-500"
+            >
+              <Smile size={18} />
+            </button>
+            <input
+              type="text"
               value={input}
               onChange={(e) => setInput(e.target.value)}
+              placeholder="Type a message..."
+              className="flex-1 border rounded-full px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+              required
             />
             <button
               type="submit"
-              className="bg-indigo-700 text-white p-2 rounded"
+              className="p-2 rounded-full bg-indigo-600 text-white hover:bg-indigo-700"
             >
-              ➤
+              <Send size={18} />
             </button>
           </form>
         </div>

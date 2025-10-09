@@ -1,9 +1,14 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { Link, useNavigate } from "react-router-dom";
 
 const Dheader = () => {
   const [showNotifications, setShowNotifications] = useState(false);
-  const [showProfile, setShowProfile] = useState(false);
-
+  const [currentUser, setCurrentUser] = useState(null);
+  const navigate = useNavigate();
+const goToProfile = () => {
+    navigate("/instructor/profile");
+  };
+  // Dummy notifications (replace with API later)
   const notifications = [
     { id: 1, type: 'enrollment', message: 'New student enrolled in JavaScript Basics', time: '2 min ago' },
     { id: 2, type: 'payment', message: 'Payment received for 1-on-1 session', time: '5 min ago' },
@@ -11,17 +16,39 @@ const Dheader = () => {
     { id: 4, type: 'question', message: 'Student question in React Advanced course', time: '1 hour ago' },
   ];
 
+  // Load user from localStorage
+  useEffect(() => {
+    const user = localStorage.getItem("currentUser");
+    if (user) setCurrentUser(JSON.parse(user));
+  }, []);
+
+  const handleLogout = async () => {
+    try {
+      await fetch("https://guzostudy-1.onrender.com/api/users/logout", {
+        method: "POST",
+        credentials: "include",
+        headers: { "Content-Type": "application/json" },
+      });
+    } catch (error) {
+      console.error("Error signing out:", error);
+    } finally {
+      localStorage.removeItem("currentUser");
+      localStorage.removeItem("token");
+      navigate("/");
+      window.location.reload();
+    }
+  };
+
+  
+
   return (
     <header className="bg-white shadow-sm border-b border-gray-200">
       <div className="flex items-center justify-between px-6 py-4">
-        <div className="flex items-center">
-          <div className="flex items-center space-x-3">
-            <div className="w-8 h-8 bg-gradient-to-r from-blue-600 to-purple-600 rounded-lg flex items-center justify-center">
-              <span className="text-white font-bold text-sm">T</span>
-            </div>
-            <h1 className="text-xl font-semibold text-gray-800">Teachers Dashboard</h1>
-          </div>
-        </div>
+        {/* Logo */}
+        <Link to="/" className="text-2xl font-bold flex items-center">
+          <span className="text-blue-600">Guzo</span>
+          <span className="text-gray-800">Study</span>
+        </Link>
 
         <div className="flex items-center space-x-4">
           {/* Search */}
@@ -37,9 +64,11 @@ const Dheader = () => {
           </div>
 
           {/* Quick Actions */}
-          <button className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors">
-            Start Live Class
-          </button>
+          <a href="https://vc-frontend2.vercel.app" target="_blank" rel="noopener noreferrer">
+            <button className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors">
+              Start Live Class
+            </button>
+          </a>
 
           {/* Notifications */}
           <div className="relative">
@@ -54,7 +83,7 @@ const Dheader = () => {
                 {notifications.length}
               </span>
             </button>
-            
+
             {showNotifications && (
               <div className="absolute right-0 mt-2 w-80 bg-white rounded-lg shadow-lg border border-gray-200 z-50">
                 <div className="p-4 border-b border-gray-200">
@@ -75,35 +104,37 @@ const Dheader = () => {
             )}
           </div>
 
-          {/* Profile */}
-          <div className="relative">
-            <button
-              onClick={() => setShowProfile(!showProfile)}
-              className="flex items-center space-x-2 p-2 rounded-lg hover:bg-gray-100"
-            >
-              <img
-                src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
-                alt="Profile"
-                className="h-8 w-8 rounded-full"
-              />
-              <span className="hidden md:block text-sm font-medium text-gray-700">Prof. Sarah Johnson</span>
-              <svg className="h-4 w-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-              </svg>
-            </button>
+          {/* Profile Dropdown */}
+          {currentUser && (
+            <div className="relative group">
+              <button className="flex items-center space-x-2 focus:outline-none">
+                <img
+                  src={
+                    currentUser.profilePic ||
+                    `https://ui-avatars.com/api/?name=${currentUser.name}`
+                  }
+                  alt="Profile"
+                  className="w-8 h-8 rounded-full"
+                />
+                <span className="text-gray-700">Hi, {currentUser.name}</span>
+              </button>
 
-            {showProfile && (
-              <div className="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg border border-gray-200 z-50">
-                <div className="p-2">
-                  <a href="#" className="block px-3 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded">View Profile</a>
-                  <a href="#" className="block px-3 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded">Account Settings</a>
-                  <a href="#" className="block px-3 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded">Help & Support</a>
-                  <hr className="my-1" />
-                  <a href="#" className="block px-3 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded">Sign Out</a>
-                </div>
+              <div className="absolute right-0 mt-2 w-48 bg-white border rounded-lg shadow-lg opacity-0 invisible group-hover:visible group-hover:opacity-100 transition-all">
+                <button
+                  onClick={goToProfile}
+                  className="block w-full text-left px-4 py-2 text-gray-700 hover:bg-gray-100"
+                >
+                  Profile
+                </button>
+                <button
+                  onClick={handleLogout}
+                  className="block w-full text-left px-4 py-2 text-red-600 hover:bg-gray-100"
+                >
+                  Logout
+                </button>
               </div>
-            )}
-          </div>
+            </div>
+          )}
         </div>
       </div>
     </header>

@@ -1,29 +1,39 @@
-// controllers/chatController.js
-import OpenAI from "openai";
+import fetch from "node-fetch";
 
-const openai = new OpenAI({
-  apiKey: process.env.VITE_OPENAI_API_KEY, // keep your key in .env
-});
+export const chatController = async (req, res) => {
+  const { message } = req.body;
 
-// POST /api/chat
-export const handleChat = async (req, res) => {
+  if (!message) {
+    return res.status(400).json({ error: "Message is required" });
+  }
+
   try {
-    const { message } = req.body;
+    const response = await fetch(
+      `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${process.env.API_KEY}`,
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          contents: [
+            {
+              role: "user",
+              parts: [{ text: message }]
+            }
+          ]
+        })
+      }
+    );
 
-    if (!message) {
-      return res.status(400).json({ error: "Message is required" });
-    }
+    const data = await response.json();
 
-    const completion = await openai.chat.completions.create({
-      model: "gpt-3.5-turbo", // or gpt-4
-      messages: [{ role: "user", content: message }],
-    });
+    // ✅ Correct extraction
+    const reply =
+      data?.candidates?.[0]?.content?.parts?.[0]?.text ||
+      "⚠️ No response from API";
 
-    const reply = completion.choices[0].message.content;
-
-    res.json({ response: reply });
-  } catch (error) {
-    console.error("ChatController Error:", error);
-    res.status(500).json({ error: "Something went wrong" });
+    res.json({ reply });
+  } catch (err) {
+    console.error("❌ API Error:", err);
+    res.status(500).json({ error: err.message });
   }
 };

@@ -7,7 +7,11 @@ import axios from 'axios';
 function VerifyOTP() {
   const navigate = useNavigate();
   const location = useLocation();
-  const email = location.state?.email || ''; // get email from SignUp page
+
+  // get data passed from SignUp
+  const email = location.state?.email || '';
+  const name = location.state?.name || '';
+  const role = location.state?.role || '';
 
   const [otp, setOtp] = useState('');
   const [message, setMessage] = useState('');
@@ -22,8 +26,8 @@ function VerifyOTP() {
 
     try {
       const response = await axios.post(
-        'https://guzostudy.onrender.com/api/auth/verify-otp',
-        { email, otp }
+        'https://guzostudy-1.onrender.com/api/users/verify-otp',
+        { email, otp, name, role } // send all user info
       );
 
       console.log("OTP verification response:", response.data);
@@ -50,7 +54,12 @@ function VerifyOTP() {
         <div className="max-w-md w-full space-y-8">
           <div className="text-center">
             <h2 className="text-3xl font-bold text-gray-900 mb-2">Verify OTP</h2>
-            <p className="text-gray-600">Enter the OTP sent to your email: {email}</p>
+            <p className="text-gray-600">
+              OTP sent to <span className="font-medium">{email}</span>
+            </p>
+            <p className="text-gray-500 text-sm mt-1">
+              Name: <span className="font-semibold">{name}</span> | Role: <span className="font-semibold capitalize">{role}</span>
+            </p>
           </div>
 
           <form className="mt-8 space-y-6" onSubmit={handleSubmit}>

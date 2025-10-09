@@ -1,9 +1,5 @@
 import React from "react";
-import {
-  View,
-  Text,
-  TouchableOpacity,
-} from "react-native";
+import { View, Text, TouchableOpacity } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 
 export default function Header({ userRole }) {
@@ -23,7 +19,7 @@ export default function Header({ userRole }) {
           alignSelf: "center",
           paddingHorizontal: 16,
           width: "100%",
-          paddingTop: 20, 
+          paddingTop: 20,
         }}>
         <View
           style={{
@@ -36,7 +32,7 @@ export default function Header({ userRole }) {
             style={{
               flexDirection: "row",
               alignItems: "center",
-              marginBottom: 12, 
+              marginBottom: 12,
             }}>
             <Text
               style={{
@@ -57,7 +53,7 @@ export default function Header({ userRole }) {
             </Text>
           </TouchableOpacity>
 
-          {/* Navigation (navbar under logo) */}
+          {/* navbar under logo */}
           <View
             style={{
               flexDirection: "row",
@@ -66,7 +62,7 @@ export default function Header({ userRole }) {
             <TouchableOpacity onPress={() => navigation.navigate("Explore")}>
               <Text
                 style={{
-                  color: "#374151", 
+                  color: "#374151",
                   fontSize: 16,
                   marginHorizontal: 8,
                 }}>
