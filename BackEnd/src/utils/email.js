@@ -1,17 +1,19 @@
-import mailgun from 'mailgun-js';
 import dotenv from 'dotenv';
+import formData from 'form-data';
+import Mailgun from 'mailgun.js';
 
 dotenv.config();
 
-const mg = mailgun({
-  apiKey: process.env.MAILGUN_API_KEY,
-  domain: process.env.MAILGUN_DOMAIN,
+const mailgun = new Mailgun(formData);
+const mg = mailgun.client({
+  username: 'api',
+  key: process.env.MAILGUN_API_KEY,
 });
 
 const sendEmail = async (to, subject, otp, studentName = 'Student') => {
   if (!to) throw new Error('Recipient email is missing');
 
-  const data = {
+  const messageData = {
     from: process.env.EMAIL_FROM,
     to,
     subject,
@@ -31,12 +33,12 @@ const sendEmail = async (to, subject, otp, studentName = 'Student') => {
   };
 
   try {
-    const body = await mg.messages().send(data);
-    console.log('📧 OTP Email sent to:', to, 'ID:', body.id);
-    return body;
-  } catch (err) {
-    console.error('❌ OTP email failed:', err.message);
-    throw new Error('Failed to send email: ' + err.message);
+    const result = await mg.messages.create(process.env.MAILGUN_DOMAIN, messageData);
+    console.log('📧 OTP Email sent to:', to, 'ID:', result.id);
+    return result;
+  } catch (error) {
+    console.error('❌ OTP email failed:', error.message);
+    throw new Error('Failed to send email: ' + error.message);
   }
 };
 
