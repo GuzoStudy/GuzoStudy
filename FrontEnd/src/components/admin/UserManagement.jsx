@@ -1,31 +1,74 @@
-import { useState } from "react";
+// src/pages/UserManagement.jsx
+import React, { useState, useEffect } from "react";
+import axios from "axios";
 
 export const UserManagement = () => {
   const [activeView, setActiveView] = useState("students");
+  const [students, setStudents] = useState([]);
+  const [instructors, setInstructors] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
 
-  // --- Mock Data ---
-  const students = [
-    { id: 1, full_name: "Marta Kidane", email: "marta@example.com", status: "active" },
-    { id: 2, full_name: "Abel Teshome", email: "abel@example.com", status: "suspended" },
-    { id: 3, full_name: "Sara Getaneh", email: "sara@example.com", status: "active" },
-  ];
+  const token = localStorage.getItem("adminToken"); // your JWT
 
-  const instructors = [
-    {
-      id: 1,
-      full_name: "Yohannes Mekonnen",
-      expertise: ["Web Dev", "UI/UX"],
-      status: "approved",
-      verification_status: "verified",
-    },
-    {
-      id: 2,
-      full_name: "Liya Abebe",
-      expertise: ["Marketing", "SEO"],
-      status: "pending",
-      verification_status: "unverified",
-    },
-  ];
+  // Fetch all users
+  const fetchUsers = async () => {
+    setLoading(true);
+    try {
+      const res = await axios.get("http://localhost:5000/api/admin/users", {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+
+      const allUsers = res.data.users || [];
+      setStudents(allUsers.filter((u) => u.role === "student"));
+      setInstructors(allUsers.filter((u) => u.role === "instructor"));
+    } catch (err) {
+      console.error(err.response || err);
+      setError("Failed to fetch user data");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchUsers();
+  }, []);
+
+  // Handle student suspend/activate
+  const toggleStudentStatus = async (id, suspended) => {
+    try {
+      await axios.put(
+        `http://localhost:5000/api/admin/users/manage`,
+        { userId: id, action: suspended ? "activate" : "suspend" },
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+      fetchUsers(); // refresh data
+    } catch (err) {
+      console.error(err.response || err);
+      alert("Failed to update student status");
+    }
+  };
+
+  // Handle instructor approval
+  const approveInstructor = async (id) => {
+    try {
+      await axios.put(
+        `http://localhost:5000/api/admin/users/manage`,
+        { userId: id, action: "approve" },
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+      fetchUsers(); // refresh data
+    } catch (err) {
+      console.error(err.response || err);
+      alert("Failed to approve instructor");
+    }
+  };
+
+  if (loading)
+    return <div className="p-8 text-center text-gray-500">Loading users...</div>;
+
+  if (error)
+    return <div className="p-8 text-center text-red-500">{error}</div>;
 
   return (
     <div className="p-8 max-w-6xl mx-auto">
@@ -54,7 +97,7 @@ export const UserManagement = () => {
         ))}
       </div>
 
-      {/* Students View */}
+      {/* Students Table */}
       {activeView === "students" ? (
         <div className="bg-white rounded-2xl border border-blue-100 shadow-md overflow-hidden">
           <div className="px-5 py-4 border-b border-gray-200">
@@ -74,29 +117,30 @@ export const UserManagement = () => {
               </thead>
               <tbody>
                 {students.map((s) => (
-                  <tr key={s.id} className="border-b last:border-0">
-                    <td className="py-4 px-5 font-medium text-gray-800">{s.full_name}</td>
+                  <tr key={s._id} className="border-b last:border-0">
+                    <td className="py-4 px-5 font-medium text-gray-800">{s.fullName}</td>
                     <td className="py-4 px-5 text-gray-600">{s.email}</td>
                     <td className="py-4 px-5 text-center">
                       <span
                         className={`px-3 py-1 rounded-full text-xs font-bold text-white uppercase ${
-                          s.status === "active"
-                            ? "bg-gradient-to-r from-green-500 to-emerald-600"
-                            : "bg-gradient-to-r from-red-500 to-red-700"
-                        }`}
-                      >
-                        {s.status}
-                      </span>
-                    </td>
-                    <td className="py-4 px-5 text-center">
-                      <button
-                        className={`px-3 py-1.5 rounded-md text-xs font-semibold text-white ${
-                          s.status === "active"
+                          s.isSuspended
                             ? "bg-gradient-to-r from-red-500 to-red-700"
                             : "bg-gradient-to-r from-green-500 to-emerald-600"
                         }`}
                       >
-                        {s.status === "active" ? "Suspend" : "Activate"}
+                        {s.isSuspended ? "Suspended" : "Active"}
+                      </span>
+                    </td>
+                    <td className="py-4 px-5 text-center">
+                      <button
+                        onClick={() => toggleStudentStatus(s._id, s.isSuspended)}
+                        className={`px-3 py-1.5 rounded-md text-xs font-semibold text-white ${
+                          s.isSuspended
+                            ? "bg-gradient-to-r from-green-500 to-emerald-600"
+                            : "bg-gradient-to-r from-red-500 to-red-700"
+                        }`}
+                      >
+                        {s.isSuspended ? "Activate" : "Suspend"}
                       </button>
                     </td>
                   </tr>
@@ -106,7 +150,7 @@ export const UserManagement = () => {
           </div>
         </div>
       ) : (
-        // Instructors View
+        // Instructors Table
         <div className="bg-white rounded-2xl border border-blue-100 shadow-md overflow-hidden">
           <div className="px-5 py-4 border-b border-gray-200">
             <h3 className="text-lg font-bold text-gray-800">
@@ -126,8 +170,8 @@ export const UserManagement = () => {
               </thead>
               <tbody>
                 {instructors.map((i) => (
-                  <tr key={i.id} className="border-b last:border-0">
-                    <td className="py-4 px-5 font-medium text-gray-800">{i.full_name}</td>
+                  <tr key={i._id} className="border-b last:border-0">
+                    <td className="py-4 px-5 font-medium text-gray-800">{i.fullName}</td>
                     <td className="py-4 px-5 text-gray-600">{i.expertise.join(", ")}</td>
                     <td className="py-4 px-5 text-center">
                       <span
@@ -145,17 +189,20 @@ export const UserManagement = () => {
                     <td className="py-4 px-5 text-center">
                       <span
                         className={`px-3 py-1 rounded-full text-xs font-bold text-white uppercase ${
-                          i.verification_status === "verified"
+                          i.isVerified
                             ? "bg-gradient-to-r from-blue-500 to-blue-700"
                             : "bg-gradient-to-r from-gray-500 to-gray-700"
                         }`}
                       >
-                        {i.verification_status}
+                        {i.isVerified ? "Verified" : "Unverified"}
                       </span>
                     </td>
                     <td className="py-4 px-5 text-center">
                       {i.status === "pending" && (
-                        <button className="px-3 py-1.5 rounded-md text-xs font-semibold text-white bg-gradient-to-r from-green-500 to-emerald-600">
+                        <button
+                          onClick={() => approveInstructor(i._id)}
+                          className="px-3 py-1.5 rounded-md text-xs font-semibold text-white bg-gradient-to-r from-green-500 to-emerald-600"
+                        >
                           Approve
                         </button>
                       )}

@@ -1,21 +1,80 @@
-import React, { useState } from "react";
+// src/pages/PlatformAnalytics.jsx
+import React, { useState, useEffect } from "react";
+import axios from "axios";
 
 export const PlatformAnalytics = () => {
-  const [activeTab, setActiveTab] = useState("analytics");
+  const [analytics, setAnalytics] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
 
-  const mockAnalytics = {
-    totalUsers: 1842,
-    totalCourses: 42,
-    totalRevenue: 12450,
-    totalEnrollments: 983,
-  };
+  useEffect(() => {
+    const fetchAnalytics = async () => {
+      try {
+        const token = localStorage.getItem("adminToken"); // JWT from admin login
+        const res = await axios.get("http://localhost:5000/api/admin/analytics", {
+          headers: { Authorization: `Bearer ${token}` },
+        });
 
-  const mockEnrollmentGrowth = [
-    { id: 1, date: "2025-09-07", newUsers: 45, newEnrollments: 32, revenue: 900 },
-    { id: 2, date: "2025-09-06", newUsers: 39, newEnrollments: 28, revenue: 740 },
-    { id: 3, date: "2025-09-05", newUsers: 41, newEnrollments: 25, revenue: 670 },
-    { id: 4, date: "2025-09-04", newUsers: 48, newEnrollments: 30, revenue: 800 },
+        setAnalytics(res.data);
+      } catch (err) {
+        console.error(err.response || err);
+        setError("Failed to fetch analytics data");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchAnalytics();
+  }, []);
+
+  if (loading)
+    return <div className="p-8 text-center text-gray-500">Loading analytics...</div>;
+
+  if (error)
+    return <div className="p-8 text-center text-red-500">{error}</div>;
+
+  const stats = [
+    {
+      icon: "👥",
+      label: "Total Users",
+      value: Object.values(analytics.totalUsers || {}).reduce((a, b) => a + b, 0),
+      color: "from-blue-500 to-blue-700",
+      accent: "text-blue-500",
+      note: "All registered users",
+    },
+    {
+      icon: "📚",
+      label: "Total Courses",
+      value: (analytics.totalCourses?.active || 0) + (analytics.totalCourses?.pending || 0),
+      color: "from-purple-500 to-purple-700",
+      accent: "text-purple-500",
+      note: "Published + pending",
+    },
+    {
+      icon: "💰",
+      label: "Total Revenue",
+      value: `$${(analytics.totalRevenue || 0).toLocaleString()}`,
+      color: "from-emerald-500 to-emerald-700",
+      accent: "text-emerald-500",
+      note: `Platform fee: ${analytics.platformFee || 0}%`,
+    },
+    {
+      icon: "📈",
+      label: "Total Enrollments",
+      value: analytics.totalEnrollments || 0,
+      color: "from-amber-500 to-amber-700",
+      accent: "text-amber-500",
+      note: "Completed enrollments",
+    },
   ];
+
+  const enrollmentGrowth = (analytics.enrollmentsGrowth || []).map((item, i) => ({
+    id: i,
+    date: item._id,
+    newEnrollments: item.count,
+    revenue: 0, // Admin controller does not return per-day revenue, can add if needed
+    newUsers: 0, // Optional placeholder
+  }));
 
   return (
     <div className="p-8 max-w-[1400px] mx-auto">
@@ -30,40 +89,7 @@ export const PlatformAnalytics = () => {
 
       {/* Stats Grid */}
       <div className="grid gap-5 mb-10 sm:grid-cols-2 lg:grid-cols-4">
-        {[
-          {
-            icon: "👥",
-            label: "Total Users",
-            value: mockAnalytics.totalUsers,
-            color: "from-blue-500 to-blue-700",
-            accent: "text-blue-500",
-            note: "Active members",
-          },
-          {
-            icon: "📚",
-            label: "Total Courses",
-            value: mockAnalytics.totalCourses,
-            color: "from-purple-500 to-purple-700",
-            accent: "text-purple-500",
-            note: "Available courses",
-          },
-          {
-            icon: "💰",
-            label: "Total Revenue",
-            value: `$${mockAnalytics.totalRevenue.toLocaleString()}`,
-            color: "from-emerald-500 to-emerald-700",
-            accent: "text-emerald-500",
-            note: "Platform earnings",
-          },
-          {
-            icon: "📈",
-            label: "Total Enrollments",
-            value: mockAnalytics.totalEnrollments,
-            color: "from-amber-500 to-amber-700",
-            accent: "text-amber-500",
-            note: "Student enrollments",
-          },
-        ].map((card, i) => (
+        {stats.map((card, i) => (
           <div
             key={i}
             className="bg-white border border-blue-100 rounded-2xl p-6 shadow-md shadow-blue-100"
@@ -73,13 +99,9 @@ export const PlatformAnalytics = () => {
             >
               {card.icon}
             </div>
-            <h3 className="text-sm font-semibold text-gray-500 mb-2">
-              {card.label}
-            </h3>
+            <h3 className="text-sm font-semibold text-gray-500 mb-2">{card.label}</h3>
             <p className="text-3xl font-bold text-gray-800">{card.value}</p>
-            <p className={`text-xs font-semibold mt-2 ${card.accent}`}>
-              {card.note}
-            </p>
+            <p className={`text-xs font-semibold mt-2 ${card.accent}`}>{card.note}</p>
           </div>
         ))}
       </div>
@@ -87,10 +109,10 @@ export const PlatformAnalytics = () => {
       {/* Enrollment Growth */}
       <div className="bg-white border border-blue-100 rounded-2xl p-6 shadow-md shadow-blue-100">
         <h3 className="text-lg font-bold mb-4 text-gray-800 flex items-center gap-2">
-          <span>📊</span> Enrollment Growth (Last 30 Days)
+          <span>📊</span> Enrollment Growth (Monthly)
         </h3>
 
-        {mockEnrollmentGrowth.length === 0 ? (
+        {enrollmentGrowth.length === 0 ? (
           <p className="text-center text-gray-500 py-10">
             No analytics data available yet
           </p>
@@ -100,7 +122,7 @@ export const PlatformAnalytics = () => {
               <thead>
                 <tr className="border-b-2 border-gray-200">
                   <th className="py-3 px-4 text-left font-semibold text-gray-500">
-                    Date
+                    Month
                   </th>
                   <th className="py-3 px-4 text-center font-semibold text-gray-500">
                     New Users
@@ -114,19 +136,19 @@ export const PlatformAnalytics = () => {
                 </tr>
               </thead>
               <tbody>
-                {mockEnrollmentGrowth.map((day) => (
+                {enrollmentGrowth.map((day) => (
                   <tr key={day.id} className="border-b border-gray-100">
                     <td className="py-3 px-4 text-gray-800">
-                      {new Date(day.date).toLocaleDateString()}
+                      {day.date}
                     </td>
                     <td className="py-3 px-4 text-center font-semibold text-blue-500">
-                      +{day.newUsers}
+                      {day.newUsers}
                     </td>
                     <td className="py-3 px-4 text-center font-semibold text-purple-500">
                       {day.newEnrollments}
                     </td>
                     <td className="py-3 px-4 text-right font-semibold text-emerald-500">
-                      ${day.revenue.toLocaleString()}
+                      ${day.revenue}
                     </td>
                   </tr>
                 ))}
