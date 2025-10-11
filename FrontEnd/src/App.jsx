@@ -25,7 +25,7 @@ import TeacherDashboard from "./pages/TeachersDashboard";
 import Chatbot from "./components/ChatBot";
 
 //student
-import { Dashboard } from "./pages/Dashbord.jsx";
+import { Dashboard } from "./pages/Studentdashbord.jsx";
 import { AdminDashboard } from "./pages/AdminDashboard.jsx";
 
 function App() {
